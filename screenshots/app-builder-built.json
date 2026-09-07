@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Nhà Phố 5×30",
+      "hasCanvas": false,
+      "bodyTextLen": 6028,
+      "bodyTextHash": "cda0126ba037d4901d6e07e803d7978a5c5d0c79f96ed8c3a3b90bfa122b633c",
+      "bodyTextPrefix": "5×30 PHƯƠNG ÁN A Lô đất Mặt bằng Ánh sáng Vật liệu Prompt 3D ATE",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Nhà Phố 5×30",
+      "hasCanvas": false,
+      "bodyTextLen": 6016,
+      "bodyTextHash": "3165b92aa157321db5d5ab044f99f0d1bfd10c2bba1954658c1f936d87f40d79",
+      "bodyTextPrefix": "5×30 Lô đất Mặt bằng Ánh sáng Vật liệu Prompt 3D ATELIER · PHƯƠN",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

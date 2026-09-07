@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+
+  --color-paper: #f4f1ea;
+  --color-paper-2: #ebe6db;
+  --color-surface: #fbf8f2;
+  --color-ink: #1c1a17;
+  --color-ink-soft: #3a3631;
+  --color-muted: #6b6560;
+  --color-faint: #9a938b;
+  --color-line: #d9d2c6;
+  --color-sage: #3d4a42;
+  --color-sage-2: #5c6b62;
+  --color-oak: #8b6f4e;
+  --color-accent: #3d4a42;
+  --color-accent-fg: #f4f1ea;
+
+  --color-plan-living: #e6d9c6;
+  --color-plan-kitchen: #dcc4aa;
+  --color-plan-bed: #d3ddd4;
+  --color-plan-wc: #d2d6db;
+  --color-plan-stair: #c8d2cb;
+  --color-plan-void: #dbeaf0;
+  --color-plan-worship: #e4d2b4;
+  --color-plan-outdoor: #c5d4bf;
+  --color-plan-service: #ddd6cc;
+  --color-plan-parking: #cfcbc3;
+
+  --color-mat-plaster: #f3eee4;
+  --color-mat-teak: #8b6f4e;
+  --color-mat-charcoal: #2c2c2c;
+  --color-mat-stone: #6e6a64;
+  --color-mat-glass: #c5d0d4;
+  --color-mat-oak: #d8c3a5;
+
+  --aspect-portrait: 3 / 4;
+  --aspect-photo: 16 / 9;
+  --aspect-land: 4 / 3;
+  --aspect-tall: 4 / 5;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  --shadow-border:
+    0 0 0 1px rgb(28 26 23 / 0.06), 0 1px 2px -1px rgb(28 26 23 / 0.06),
+    0 2px 8px 0 rgb(28 26 23 / 0.04);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  img {
+    outline: 1px solid rgb(28 26 23 / 0.1);
+    outline-offset: -1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.plan-living {
+  fill: var(--color-plan-living);
+  background-color: var(--color-plan-living);
+}
+.plan-kitchen {
+  fill: var(--color-plan-kitchen);
+  background-color: var(--color-plan-kitchen);
+}
+.plan-bed {
+  fill: var(--color-plan-bed);
+  background-color: var(--color-plan-bed);
+}
+.plan-wc {
+  fill: var(--color-plan-wc);
+  background-color: var(--color-plan-wc);
+}
+.plan-stair {
+  fill: var(--color-plan-stair);
+  background-color: var(--color-plan-stair);
+}
+.plan-void {
+  fill: var(--color-plan-void);
+  background-color: var(--color-plan-void);
+}
+.plan-worship {
+  fill: var(--color-plan-worship);
+  background-color: var(--color-plan-worship);
+}
+.plan-outdoor {
+  fill: var(--color-plan-outdoor);
+  background-color: var(--color-plan-outdoor);
+}
+.plan-service {
+  fill: var(--color-plan-service);
+  background-color: var(--color-plan-service);
+}
+.plan-parking {
+  fill: var(--color-plan-parking);
+  background-color: var(--color-plan-parking);
+}
