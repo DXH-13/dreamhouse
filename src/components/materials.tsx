@@ -4,7 +4,7 @@ export function Materials() {
   return (
     <section id="vat-lieu" className="scroll-mt-20 border-t border-line bg-surface">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">04 — Mặt tiền</p>
+        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">05 — Mặt tiền</p>
         <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium sm:text-4xl">
           Ba vật liệu, một nhịp đứng
         </h2>

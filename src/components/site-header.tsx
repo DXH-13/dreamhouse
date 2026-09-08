@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { href: "#tong-mat-bang", label: "Lô đất" },
   { href: "#mat-bang", label: "Mặt bằng" },
+  { href: "#chi-tiet", label: "Chi tiết" },
   { href: "#anh-sang", label: "Ánh sáng" },
   { href: "#vat-lieu", label: "Vật liệu" },
-  { href: "#prompt", label: "Prompt 3D" },
+  { href: "#phoi-canh", label: "Phối cảnh 3D" },
+  { href: "#prompt", label: "Prompt" },
 ];
 
 export function SiteHeader() {

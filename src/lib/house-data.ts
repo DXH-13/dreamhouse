@@ -61,7 +61,7 @@ export const FLOORS: Floor[] = [
     title: "Mặt đất — đón khách, ở và chăm sóc người lớn tuổi",
     blurb:
       "Mặt bằng mở trước — riêng tư sau. Cầu thang và giếng trời cắt giữa nhà, WC chung kề phòng ngủ ông bà.",
-    height: "Trần 3.60 m",
+    height: "Cao độ tầng 3.60 m · thông thủy 3.30 m",
     rooms: [
       {
         id: "t1-living",
@@ -185,7 +185,7 @@ export const FLOORS: Floor[] = [
     title: "Ba phòng ngủ — một WC rộng, lấy sáng từ hai giếng",
     blurb:
       "Master nhìn mặt tiền, phòng giữa vay sáng từ giếng trời, phòng cuối nhìn sân sau. WC chung 6 m² trên cùng trục ướt.",
-    height: "Trần 3.30 m",
+    height: "Cao độ tầng 3.30 m · thông thủy 3.00 m",
     rooms: [
       {
         id: "t2-loggia",
@@ -321,7 +321,7 @@ export const FLOORS: Floor[] = [
     title: "Phòng thờ hướng mặt tiền — sân thượng trước, sân phơi sau",
     blurb:
       "Tum không phủ hết 18 m. Lùi 4.50 m trước để lấy khoảng thoáng cho ban thờ; lùi sau làm sân phơi và cụm máy.",
-    height: "Trần 3.00 m",
+    height: "Cao độ tầng 3.00 m · thông thủy 2.70 m",
     rooms: [
       {
         id: "tum-terrace",
@@ -486,3 +486,146 @@ export const FENG_SHUI = [
 ];
 
 export const MJ_PROMPT = `Photorealistic architectural rendering of a contemporary 5-meter-wide Vietnamese townhouse on a 5x30 meter urban lot, two storeys plus a setback rooftop tum. Cubic minimal volumes, warm off-white lime plaster, charcoal aluminum frames, vertical teak sun-shading fins across the second-floor window, recessed ground-floor full-height glass living room opening onto an 8-meter front garden with one dark sedan on stone pavers, tropical underplanting, and a slim horizontal-slat metal gate. Rooftop: timber deck facing the street and a quiet glass-walled ancestral room set back 4.5 meters. Granite plinth, no people, soft morning sunlight, long shadows, editorial architecture photography, 35mm --ar 16:9 --style raw --v 6.1`;
+
+/* ── Cao độ (floor-to-floor, đo từ cốt vỉa hè ±0.00) ─────────────────────── */
+
+export const LEVELS = [
+  { key: "san", label: "Sân / vỉa hè", z: 0, note: "±0.00" },
+  { key: "t1", label: "Cốt nền tầng 1", z: 0.45, note: "3 bậc tam cấp 150 mm" },
+  { key: "t2", label: "Sàn tầng 2", z: 4.05, note: "cao độ tầng 3.60 m" },
+  { key: "tum", label: "Sàn tum", z: 7.35, note: "cao độ tầng 3.30 m" },
+  { key: "mai", label: "Mái tum", z: 10.35, note: "cao độ tầng 3.00 m" },
+  { key: "dinh", label: "Đỉnh lan can mái", z: 11.2, note: "tổng cao 11.20 m" },
+] as const;
+
+export type DetailId = "section" | "elevation" | "stair" | "void" | "wet";
+
+export type Detail = {
+  id: DetailId;
+  code: string;
+  label: string;
+  title: string;
+  scale: string;
+  blurb: string;
+  specs: { k: string; v: string }[];
+  notes: string[];
+};
+
+export const DETAILS: Detail[] = [
+  {
+    id: "section",
+    code: "CT-01",
+    label: "Mặt cắt dọc",
+    title: "Mặt cắt A–A qua giếng trời và lõi thang",
+    scale: "Tỷ lệ 1:150 · đơn vị mét",
+    blurb:
+      "Cắt dọc suốt 30 m lô đất. Thấy được cả ba lớp: sân trước 8 m, khối nhà 18 m ba tầng, sân sau 4 m — và ống giếng trời xuyên từ sàn tầng 1 lên mái tum.",
+    specs: [
+      { k: "Cao độ tầng", v: "3.60 / 3.30 / 3.00 m" },
+      { k: "Thông thủy sau dầm", v: "3.30 / 3.00 / 2.70 m" },
+      { k: "Cốt nền tầng 1", v: "+0.45 m so với vỉa hè" },
+      { k: "Tổng cao công trình", v: "11.20 m" },
+      { k: "Giếng trời", v: "1.50 × 2.80 m, thông 3 tầng" },
+      { k: "Tum lùi", v: "4.50 m trước · 4.80 m sau" },
+    ],
+    notes: [
+      "Cốt nền +0.45 m: ba bậc tam cấp 150 mm, chống ngập và tách khối nhà khỏi mặt đường.",
+      "Dầm sàn 300 mm — chiều cao thông thủy hoàn thiện còn 3.30 m (T1), 3.00 m (T2), 2.70 m (tum).",
+      "Ống giếng trời liên tục ba tầng, đỉnh là mái kính + khe gió: khí nóng thoát ra ở điểm cao nhất.",
+      "Tum lùi 4.50 m trước để sân thượng đón sáng cho phòng thờ và không đổ bóng lên kính tầng 2.",
+    ],
+  },
+  {
+    id: "elevation",
+    code: "CT-02",
+    label: "Mặt đứng",
+    title: "Mặt đứng mặt tiền — 5.00 × 11.20 m",
+    scale: "Tỷ lệ 1:100 · đơn vị mét",
+    blurb:
+      "Mặt tiền chỉ rộng 5 m nên nhịp phải là nhịp đứng: lam teak chia mặt kính tầng 2 thành 41 khe, bệ đá tách khối khỏi đất, tum lùi hẳn ra sau tầm nhìn.",
+    specs: [
+      { k: "Bề rộng mặt tiền", v: "5.00 m (tim trục)" },
+      { k: "Kính phòng khách", v: "4.20 × 2.70 m, lùi 0.60 m" },
+      { k: "Lam teak", v: "40 × 80 mm @ 120 mm (hở 80 mm)" },
+      { k: "Lan can loggia", v: "kính 10 mm, cao 1.10 m" },
+      { k: "Cổng nan ngang", v: "3.60 × 1.80 m, thoáng ~70%" },
+      { k: "Bệ granite", v: "cao 0.45 m, dày 30 mm" },
+    ],
+    notes: [
+      "Khối tầng 2 nhô ra 0.60 m so với kính tầng 1 — mái hiên tự nhiên, che mưa tạt và nắng đứng bóng.",
+      "41 thanh lam đứng suốt chiều cao loggia: buổi sáng đổ bóng sọc lên tường vôi bả, buổi chiều chắn nắng Tây.",
+      "Tum chỉ nhìn thấy phần lan can — người đứng ở vỉa hè gần như không thấy khối tum.",
+      "Không đắp phào chỉ. Toàn bộ hiệu ứng mặt tiền đến từ bóng đổ của lam và độ sâu 0.60 m của hốc kính.",
+    ],
+  },
+  {
+    id: "stair",
+    code: "CT-03",
+    label: "Cầu thang",
+    title: "Chi tiết cầu thang — 22 bậc, hai vế, chiếu nghỉ giữa",
+    scale: "Tỷ lệ 1:50 · đơn vị milimét",
+    blurb:
+      "Cao độ tầng 3.60 m chia đúng 22 bậc × 164 mm. Hai vế 11 bậc gập lại quanh chiếu nghỉ để rút chiều dài từ 5.70 m xuống còn 3.60 m chiều sâu lõi.",
+    specs: [
+      { k: "Số bậc / tầng", v: "22 bậc × 164 mm = 3 608 mm" },
+      { k: "Mặt bậc", v: "260 mm + mũi bậc 25 mm" },
+      { k: "Công thức bước chân", v: "2R + T = 588 mm" },
+      { k: "Độ dốc", v: "32.2°" },
+      { k: "Bản thang", v: "1.00 m · chiếu nghỉ 1.05 × 2.10 m" },
+      { k: "Thông thủy đầu người", v: "≥ 2.10 m" },
+      { k: "Lan can / tay vịn", v: "kính 10 mm cao 1.10 m · tay vịn 900 mm" },
+    ],
+    notes: [
+      "Vế 1 lên 11 bậc (1.804 m) — chiếu nghỉ — vế 2 lên 11 bậc, đổi hướng 180°.",
+      "Mũi bậc gỗ sồi bo R8 + hai rãnh chống trượt; bậc hở không dùng vì nhà có người lớn tuổi.",
+      "Gầm vế thứ nhất tại tầng 1 làm kho kỹ thuật: tủ điện, lọc nước, máy bơm.",
+      "Triển khai kỹ thuật: hai vế 1.00 m + tường giữa cần lõi rộng ~2.10 m, trong khi mặt bằng ý tưởng đang ghi lõi 1.10 m. Khi lên hồ sơ xin phép phải chọn: nới lõi thang sang phần giếng trời, hoặc chuyển sang thang một vế thẳng dài 5.70 m.",
+    ],
+  },
+  {
+    id: "void",
+    code: "CT-04",
+    label: "Giếng trời",
+    title: "Chi tiết mái kính giếng trời và khe thoát khí",
+    scale: "Tỷ lệ 1:25 · đơn vị milimét",
+    blurb:
+      "Giếng trời chỉ hoạt động khi có lối cho khí nóng đi ra. Mái kính đậy nước mưa, khe gió chu vi 150 mm đưa khí ra — mưa không vào, nóng không đọng.",
+    specs: [
+      { k: "Ô thông tầng", v: "1.50 × 2.80 m (T2 thu còn 1.40 m)" },
+      { k: "Mái kính", v: "cường lực dán 8 + 8 mm, dốc 5%" },
+      { k: "Khe gió chu vi", v: "150 mm, lam chắn mưa 3 lớp" },
+      { k: "Máng thu nước", v: "inox 200 × 100, ống thoát D90" },
+      { k: "Khung đỡ", v: "hộp thép mạ 100 × 50 × 2.5 mm @ 900" },
+      { k: "Lan can quanh giếng", v: "kính 10 mm cao 1.10 m" },
+    ],
+    notes: [
+      "Kính dán (laminated) chứ không phải cường lực đơn — vỡ thì mảnh dính màng PVB, không rơi xuống giếng.",
+      "Khe gió đặt cao hơn mặt kính: khí nóng bốc lên thoát ngang, mưa tạt bị ba lớp lam chặn lại.",
+      "Lưới inox 1.2 mm chống côn trùng đặt sau lam, tháo được để vệ sinh.",
+      "Sàn đáy giếng ở tầng 1 lát đá, dốc 1% về ga thu — dội rửa và tưới cây thoải mái.",
+    ],
+  },
+  {
+    id: "wet",
+    code: "CT-05",
+    label: "Trục ướt",
+    title: "Trục ướt WC tầng 1 – tầng 2 và hộp gen kỹ thuật",
+    scale: "Tỷ lệ 1:50 · đơn vị milimét",
+    blurb:
+      "Hai WC chồng đúng trục nên chỉ cần một hộp gen. Đường ống ngắn, ít co, không chạy ngang trên trần bếp và không đi qua phòng thờ.",
+    specs: [
+      { k: "Hộp gen", v: "300 × 300 mm, kề tường lõi thang" },
+      { k: "Ống thoát xí", v: "D110 PVC, dốc 2%" },
+      { k: "Ống thoát sàn", v: "D90 · lavabo D60" },
+      { k: "Ống thông hơi", v: "D60 lên quá mái tum 700 mm" },
+      { k: "Hạ cốt sàn WC", v: "50 mm, dốc 1.5% về phễu" },
+      { k: "Chống thấm", v: "2 lớp gốc xi măng, lên chân tường 300 mm" },
+    ],
+    notes: [
+      "WC tầng 2 (2.10 × 2.80 m) nằm trọn trên WC tầng 1 (1.80 × 2.40 m) — mọi ống đứng gom về một hộp.",
+      "Không có nhánh ống nào chạy ngang qua trần bếp hay trần phòng ngủ: rò rỉ chỉ ảnh hưởng đúng ô WC.",
+      "Ống thông hơi bắt buộc — thiếu nó thì xả nước tầng 2 sẽ hút cạn bẫy nước tầng 1 và bốc mùi.",
+      "Hộp gen bọc bông thủy tinh 25 mm chống ồn nước chảy, có cửa thăm 300 × 400 tại mỗi tầng.",
+    ],
+  },
+];

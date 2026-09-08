@@ -19,7 +19,7 @@ export function PromptBlock() {
   return (
     <section id="prompt" className="scroll-mt-20 border-t border-line">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">05 — Prompt 3D</p>
+        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">07 — Prompt ảnh</p>
         <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium sm:text-4xl">
           Midjourney / DALL·E
         </h2>

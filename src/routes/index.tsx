@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DetailDrawings } from "@/components/detail-drawings";
 import { FloorPlans } from "@/components/floor-plan";
 import { Hero } from "@/components/hero";
 import { LightAir } from "@/components/light-air";
@@ -6,6 +7,7 @@ import { Materials } from "@/components/materials";
 import { PromptBlock } from "@/components/prompt-block";
 import { SiteHeader } from "@/components/site-header";
 import { SitePlan } from "@/components/site-plan";
+import { Walkthrough } from "@/components/walkthrough";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -18,8 +20,10 @@ function Home() {
         <Concept />
         <SitePlan />
         <FloorPlans />
+        <DetailDrawings />
         <LightAir />
         <Materials />
+        <Walkthrough />
         <PromptBlock />
       </main>
       <footer className="border-t border-line">

@@ -4,7 +4,7 @@ export function LightAir() {
   return (
     <section id="anh-sang" className="scroll-mt-20 border-t border-line">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">03 — Sáng và gió</p>
+        <p className="text-[11px] tracking-[0.28em] text-sage uppercase">04 — Sáng và gió</p>
         <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium sm:text-4xl">
           Nhà ống 18 m sống được là nhờ hai giếng
         </h2>
