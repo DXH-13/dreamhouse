@@ -1,7 +1,7 @@
 // Xuất bản vẽ AutoCAD (DXF R12, đơn vị mm) từ src/lib/house-data.ts.
 // Chạy: node scripts/export-dxf.mjs  →  cad/dreamhouse.dxf
 import { mkdirSync, writeFileSync } from "node:fs";
-import { DETAILS, FLOORS, HOUSE, LEVELS } from "../src/lib/house-data.ts";
+import { FLOORS, HOUSE, LEVELS } from "../src/lib/house-data.ts";
 
 const M = 1000; // m → mm
 const LAYERS = { AXIS: 8, WALL: 7, ROOM: 4, FURN: 9, TEXT: 2, DIM: 3, GLASS: 5, SITE: 30, DOOR: 6, FRAME: 7 };
@@ -106,7 +106,7 @@ FLOORS.forEach((floor, i) => {
     dim(ox + W, r.y * M, ox + W, (r.y + r.h) * M, -700);
   }
   text("TEXT", ox + W / 2, -3400, 350, `MẶT BẰNG ${floor.label.toUpperCase()}`);
-  text("TEXT", ox + W / 2, -3900, 220, `TL 1:100 · ${floor.height}`);
+  text("TEXT", ox + W / 2, -3900, 220, "TL 1:100");
   text("TEXT", ox + W / 2, -1400, 200, "MẶT TIỀN");
 });
 
@@ -185,13 +185,6 @@ FLOORS.forEach((floor, i) => {
 
 // ── Chi tiết CT-03 … CT-05 (hàng dưới, đơn vị mm thật) ────────────────────
 const BASE = -17000;
-function specs(x, y, code, h) {
-  const d = DETAILS.find((d) => d.code === code);
-  d.specs.forEach((sp, i) => textL("TEXT", x, y - i * h * 1.7, h, `${sp.k}: ${sp.v}`));
-  // ghi chú dài ngắt dòng ~70 ký tự để không lấn sang chi tiết bên cạnh
-  const lines = d.notes.flatMap((n) => `- ${n}`.match(/.{1,70}(\s|$)/g).map((l) => l.trim()));
-  lines.forEach((l, i) => textL("TEXT", x, y - (d.specs.length + 1 + i) * h * 1.7, h * 0.85, l));
-}
 {
   // CT-03 cầu thang — (a) mặt cắt vế, (b) mặt bằng lõi
   const ox = 0, R = 164, T = 260, n = 11;
@@ -206,8 +199,8 @@ function specs(x, y, code, h) {
   dim(ox, BASE, ox + (n - 1) * T, BASE, 500);
   dim(ox + (n - 1) * T, BASE, ox + (n - 1) * T + 1000, BASE, 500);
   dim(ox, BASE, ox, BASE + n * R, 700);
-  textL("TEXT", ox + 200, BASE + 2400, 125, "Tay vịn 900 · lan can kính 1 100");
-  textL("TEXT", ox + 1500, BASE + 300, 125, "Bản BTCT 120, mũi bậc sồi R8");
+  textL("TEXT", ox + 200, BASE + 2400, 125, "Tay vịn 900");
+  textL("TEXT", ox + 1500, BASE + 300, 125, "BTCT 120");
   // (b) mặt bằng lõi 2.10 × 3.60
   const px = ox + 5000, py = BASE;
   rect("WALL", px, py, 2100, 3600);
@@ -221,8 +214,6 @@ function specs(x, y, code, h) {
   dim(px + 2100, py, px + 2100, py + 3600, -500);
   textL("TEXT", px + 150, py + 3000, 125, "Chiếu nghỉ 1 050");
   text("TEXT", ox + 3500, BASE - 1400, 250, "CT-03 · CẦU THANG · TL 1:50");
-  text("TEXT", ox + 3500, BASE - 1800, 150, "(a) mặt cắt vế thang      (b) mặt bằng lõi thang");
-  specs(ox, BASE - 2500, "CT-03", 125);
 }
 {
   // CT-04 mái kính giếng trời — mặt cắt ngang ô 1 500
@@ -241,11 +232,10 @@ function specs(x, y, code, h) {
   rect("WALL", ox + V + 350, gl1 - 150, 200, 100); // máng inox 200×100
   line("WALL", ox + V + 450, gl1 - 150, ox + V + 450, y0 - 200); // ống D90
   dim(ox, y0 - 200, ox + V, y0 - 200, 300);
-  textL("TEXT", ox - 900, y0 + 900, 60, "Kính dán cường lực 8+8, dốc 5%");
-  textL("TEXT", ox - 1900, y0 + 500, 60, "Khe gió 150, lam 3 lớp + lưới inox");
-  textL("TEXT", ox + V + 600, gl1 - 120, 60, "Máng inox 200×100 → D90");
+  textL("TEXT", ox - 900, y0 + 900, 60, "Kính 8+8, dốc 5%");
+  textL("TEXT", ox - 1900, y0 + 500, 60, "Khe gió 150");
+  textL("TEXT", ox + V + 600, gl1 - 120, 60, "Máng 200×100");
   text("TEXT", ox + V / 2, BASE - 1400, 250, "CT-04 · GIẾNG TRỜI · TL 1:25");
-  specs(ox - 1000, BASE - 2500, "CT-04", 125);
 }
 {
   // CT-05 trục ướt — mặt cắt đứng hộp gen 300 × 300 qua T1, T2 lên mái tum
@@ -257,18 +247,17 @@ function specs(x, y, code, h) {
   }
   for (const k of ["t1", "t2"]) {
     line("WALL", ox - 1800, z[k] - 50, ox - 300, z[k] - 50); // hạ cốt WC 50
-    textL("TEXT", ox - 4000, z[k] + 150, 125, "Sàn WC hạ 50, dốc 1.5%, chống thấm lên 300");
+    textL("TEXT", ox - 4000, z[k] + 150, 125, "Hạ cốt -50");
   }
   rect("WALL", ox, z.t1 - 200, 300, z.mai - z.t1 + 900); // hộp gen
   for (const [x, d, top] of [[80, 110, z.t2 + 800], [220, 60, z.mai + 700]]) {
     line("GLASS", ox + x - d / 2, z.t1 - 600, ox + x - d / 2, top);
     line("GLASS", ox + x + d / 2, z.t1 - 600, ox + x + d / 2, top);
   }
-  textL("TEXT", ox + 400, z.mai + 500, 125, "Ống thông hơi D60 cao quá mái 700");
-  textL("TEXT", ox + 400, z.t2 + 600, 125, "Ống xí D110 · thoát sàn D90 · lavabo D60");
-  textL("TEXT", ox + 400, z.t1 + 1600, 125, "Hộp gen 300×300, bông thủy tinh 25, cửa thăm 300×400/tầng");
+  textL("TEXT", ox + 400, z.mai + 500, 125, "D60 thông hơi");
+  textL("TEXT", ox + 400, z.t2 + 600, 125, "D110 · D90 · D60");
+  textL("TEXT", ox + 400, z.t1 + 1600, 125, "Hộp gen 300×300");
   text("TEXT", ox + 150, BASE - 1400, 250, "CT-05 · TRỤC ƯỚT · TL 1:50");
-  specs(ox - 2000, BASE - 2500, "CT-05", 125);
 }
 
 // ── Khung bản vẽ + khung tên ─────────────────────────────────────────────
@@ -276,15 +265,14 @@ function specs(x, y, code, h) {
   const [x0, y0, x1, y1] = [-6000, -33000, 90000, 33000];
   rect("FRAME", x0, y0, x1 - x0, y1 - y0);
   rect("FRAME", x0 + 300, y0 + 300, x1 - x0 - 600, y1 - y0 - 600);
-  const bw = 24000, bh = 9000, bx = x1 - 300 - bw, by = y0 + 300;
+  const bw = 24000, bh = 7200, bx = x1 - 300 - bw, by = y0 + 300;
   rect("FRAME", bx, by, bw, bh);
-  [1800, 3600, 5400, 7200].forEach((h) => line("FRAME", bx, by + h, bx + bw, by + h));
+  [1800, 3600, 5400].forEach((h) => line("FRAME", bx, by + h, bx + bw, by + h));
   line("FRAME", bx + 4000, by, bx + 4000, by + bh);
   const rows = [
     ["CÔNG TRÌNH", "NHÀ PHỐ 5 × 30 m — 2 TẦNG + TUM"],
-    ["HẠNG MỤC", "Hồ sơ kiến trúc — thiết kế ý tưởng"],
     ["NỘI DUNG", "MB T1/T2/Tum · TMB · MC A–A · MĐ · CT-03…05"],
-    ["ĐƠN VỊ", "mm · vẽ 1:1 · tỷ lệ in ghi tại từng hình"],
+    ["ĐƠN VỊ", "mm"],
     ["NGÀY", "24/09/2026 · THIẾT KẾ: ________ · KIỂM TRA: ________"],
   ];
   rows.forEach(([k, v], i) => {
@@ -292,15 +280,7 @@ function specs(x, y, code, h) {
     textL("TEXT", bx + 300, y, 300, k);
     textL("TEXT", bx + 4300, y, 380, v);
   });
-  const notes = [
-    "GHI CHÚ CHUNG",
-    "1. Cao độ ±0.00 lấy tại vỉa hè; cốt nền T1 +0.45.",
-    "2. Tường bao 200; kích thước theo tim trục trừ khi ghi thông thủy.",
-    "3. Vị trí cửa đi là đề xuất sơ bộ — T2 chưa có hành lang riêng tới PN 02.",
-    "4. Lõi thang 2 vế cần rộng ~2.10 m, mặt bằng ý tưởng ghi 1.10 m — xem CT-03.",
-    "5. Kết cấu, điện, nước do kỹ sư chuyên ngành triển khai.",
-  ];
-  notes.forEach((n, i) => textL("TEXT", bx - 24000, by + bh - 500 - i * 700, i ? 280 : 350, n));
+
 }
 
 // ── Ghi file ──────────────────────────────────────────────────────────────
@@ -309,7 +289,7 @@ const layerTable = Object.entries(LAYERS)
   .join("\n");
 const dxf = [
   "0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n9\n$INSUNITS\n70\n4\n0\nENDSEC",
-  `0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n${Object.keys(LAYERS).length}\n${layerTable}\n0\nENDTAB\n0\nENDSEC`,
+  `0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n${Object.keys(LAYERS).length}\n${layerTable}\n0\nENDTAB\n0\nTABLE\n2\nSTYLE\n70\n1\n0\nSTYLE\n2\nSTANDARD\n70\n0\n40\n0\n41\n1\n50\n0\n71\n0\n42\n250\n3\narial.ttf\n4\n\n0\nENDTAB\n0\nENDSEC`,
   "0\nSECTION\n2\nENTITIES",
   ...out,
   "0\nENDSEC\n0\nEOF\n",
