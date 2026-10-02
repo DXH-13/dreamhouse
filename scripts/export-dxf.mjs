@@ -2,9 +2,10 @@
 // Chạy: node scripts/export-dxf.mjs  →  cad/dreamhouse.dxf
 import { mkdirSync, writeFileSync } from "node:fs";
 import { FLOORS, HOUSE, LEVELS } from "../src/lib/house-data.ts";
+import { FURN, pieces, ROOM_FILL, WALLS } from "./cad-walls.mjs";
 
 const M = 1000; // m → mm
-const LAYERS = { AXIS: 8, WALL: 7, ROOM: 4, FURN: 9, TEXT: 2, DIM: 3, GLASS: 5, SITE: 30, DOOR: 6, FRAME: 7 };
+const LAYERS = { FILL: 254, AXIS: 8, WALL: 7, ROOM: 4, FURN: 8, TEXT: 7, RTXT: 250, DIM: 3, GLASS: 5, SITE: 30, DOOR: 6, FRAME: 7 };
 const out = [];
 const g = (...pairs) => out.push(pairs.join("\n"));
 
@@ -23,6 +24,10 @@ const circle = (layer, x, y, r) => g(0, "CIRCLE", 8, layer, 10, x, 20, y, 30, 0,
 const text = (layer, x, y, h, s, rot = 0) =>
   g(0, "TEXT", 8, layer, 10, x, 20, y, 30, 0, 40, h, 1, enc(s), 50, rot, 72, 1, 11, x, 21, y, 31, 0);
 
+// mảng tô đặc (SOLID) — màu ACI riêng từng mảng, nằm trên layer FILL để tắt/bật một lần
+const solid = (color, x, y, w, h) =>
+  g(0, "SOLID", 8, "FILL", 62, color, 10, x, 20, y, 30, 0, 11, x + w, 21, y, 31, 0, 12, x, 22, y + h, 32, 0, 13, x + w, 23, y + h, 33, 0);
+const cutBox = (x, y, w, h, color = 250) => (solid(color, x, y, w, h), rect("WALL", x, y, w, h));
 const textL = (layer, x, y, h, s) => g(0, "TEXT", 8, layer, 10, x, 20, y, 30, 0, 40, h, 1, enc(s));
 const poly = (layer, pts) => pts.slice(1).forEach(([x, y], i) => line(layer, pts[i][0], pts[i][1], x, y));
 
@@ -41,26 +46,15 @@ function dim(x1, y1, x2, y2, off) {
 }
 
 // ── Mặt bằng: mặt tiền ở dưới (y=0), sân sau ở trên (y=18) ────────────────
-const FURN = {
-  t1: [["r", 0.45, 2.0, 2.5, 0.85], ["r", 1.0, 3.05, 1.2, 0.55], ["r", 4.25, 1.7, 0.35, 1.6], ["r", 0.25, 5.65, 0.6, 3.6],
-    ["r", 2.35, 6.85, 1.7, 0.9], ["c", 2.55, 6.7, 0.12], ["c", 3.85, 6.7, 0.12], ["c", 2.55, 7.95, 0.12], ["c", 3.85, 7.95, 0.12],
-    ["r", 1.5, 14.35, 2.0, 2.4]],
-  t2: [["r", 1.35, 2.0, 2.3, 2.1], ["r", 1.4, 6.35, 2.0, 2.0], ["r", 1.5, 14.35, 2.0, 2.4], ["c", 4.35, 11.4, 0.22], ["r", 3.15, 10.3, 0.7, 0.7]],
-  tum: [["r", 1.5, 6.2, 2.0, 0.55], ["r", 1.7, 6.85, 1.6, 0.35]],
-};
-// Cửa đi [trục, x, y, rộng, hướng mở ±1] · cửa kính/sổ [x, y1, y2, rộng] — đơn vị m.
-// ponytail: vị trí cửa suy từ ghi chú công năng; mặt bằng ý tưởng chưa có hành lang thật — chỉnh khi triển khai.
+// Cửa kính/sổ tường ngoài [x, y1, y2, rộng] — đơn vị m. Tường ngăn + cửa đi: scripts/cad-walls.mjs
 const OPEN = {
   t1: {
-    doors: [["h", 2.2, 13.2, 0.8, 1], ["v", 3.15, 10.9, 0.7, 1], ["h", 4.0, 12.8, 0.7, -1]],
     wins: [[0.4, 0.55, 0.65, 4.2], [0.9, 17.8, 18, 3.2]],
   },
   t2: {
-    doors: [["h", 3.9, 5.4, 0.8, -1], ["h", 3.9, 9.6, 0.8, -1], ["v", 2.85, 10.9, 0.7, 1], ["h", 3.9, 13.2, 0.8, 1]],
     wins: [[0.5, 1.05, 1.15, 4.0], [1.2, 9.55, 9.65, 1.4], [0.9, 17.8, 18, 3.2], [0, 0, 0.05, 5]],
   },
   tum: {
-    doors: [["h", 3.9, 9.2, 0.8, -1], ["h", 3.9, 13.2, 0.9, 1]],
     wins: [[0.5, 4.45, 4.55, 4.0], [0, 0, 0.05, 5]],
   },
 };
@@ -68,16 +62,33 @@ const W = HOUSE.width * M, D = HOUSE.houseD * M, t = ((HOUSE.width - HOUSE.netW)
 
 FLOORS.forEach((floor, i) => {
   const ox = i * 10 * M;
-  rect("WALL", ox, 0, W, D);
-  rect("WALL", ox + t, t, W - 2 * t, D - 2 * t);
+  const m = (v) => v * M;
+  solid(254, ox, 0, W, D); // nền hành lang
+  for (const r of floor.rooms) solid(ROOM_FILL[r.kind], ox + m(r.x), m(r.y), m(r.w), m(r.h));
+  // tường ngoài: biên hai bên, tường hậu (chừa cửa sổ T1/T2), trụ mặt tiền T1
+  cutBox(ox, 0, t, D);
+  cutBox(ox + W - t, 0, t, D);
+  if (floor.id === "tum") cutBox(ox + t, D - t, W - 2 * t, t);
+  else cutBox(ox + t, D - t, 700, t), cutBox(ox + 4100, D - t, 700, t);
+  if (floor.id === "t1") cutBox(ox + t, 0, 200, 650), cutBox(ox + 4600, 0, 200, 650);
+  for (const spec of WALLS[floor.id]) {
+    const [axis, c, , , , th = 100] = spec;
+    pieces(spec, (kind, a, b) => {
+      const [A, B, C] = [m(a), m(b), m(c)];
+      const box = axis === "h" ? [ox + A, C - th / 2, B - A, th] : [ox + C - th / 2, A, th, B - A];
+      if (kind === "solid") cutBox(...box);
+      else if (kind === "glass") for (const d of [-th / 2, 0, th / 2]) axis === "h" ? line("GLASS", ox + A, C + d, ox + B, C + d) : line("GLASS", ox + C + d, A, ox + C + d, B);
+      else if (axis === "h") line("DOOR", ox + A, C, ox + A, C + B - A), arc("DOOR", ox + A, C, B - A, 0, 90);
+      else line("DOOR", ox + C, A, ox + C + B - A, A), arc("DOOR", ox + C, A, B - A, 0, 90);
+    });
+  }
   line("AXIS", ox + W / 2, -1500, ox + W / 2, D + 1500);
   for (const r of floor.rooms) {
     const [x, y, w, h] = [ox + r.x * M, r.y * M, r.w * M, r.h * M];
-    rect(r.kind === "void" ? "GLASS" : "ROOM", x, y, w, h);
-    if (r.kind === "void") line("GLASS", x, y, x + w, y + h), line("GLASS", x + w, y, x, y + h);
+    if (r.kind === "void") rect("GLASS", x, y, w, h), line("GLASS", x, y, x + w, y + h), line("GLASS", x + w, y, x, y + h);
     if (w >= 1200 && h >= 1600) {
-      text("TEXT", x + w / 2, y + h / 2 + 150, w < 2000 ? 220 : 280, r.name);
-      text("TEXT", x + w / 2, y + h / 2 - 250, 180, `${r.areaNet.toFixed(1)} m²`);
+      text("RTXT", x + w / 2, y + h / 2 + 150, w < 2000 ? 220 : 280, r.name);
+      text("RTXT", x + w / 2, y + h / 2 - 250, 180, `${r.areaNet.toFixed(1)} m²`);
     }
   }
   if (floor.id !== "tum")
@@ -85,11 +96,6 @@ FLOORS.forEach((floor, i) => {
   for (const [kind, ...v] of FURN[floor.id]) {
     const [a, b, c, d] = v.map((n) => n * M);
     kind === "r" ? rect("FURN", ox + a, b, c, d) : circle("FURN", ox + a, b, c);
-  }
-  for (const [ax, x, y, w, dir] of OPEN[floor.id].doors) {
-    const [X, Y, R] = [ox + x * M, y * M, w * M];
-    if (ax === "h") line("DOOR", X, Y, X, Y + dir * R), arc("DOOR", X, Y, R, dir > 0 ? 0 : 270, dir > 0 ? 90 : 360);
-    else line("DOOR", X, Y, X + dir * R, Y), arc("DOOR", X, Y, R, dir > 0 ? 0 : 90, dir > 0 ? 90 : 180);
   }
   for (const [x, y1, y2, w] of OPEN[floor.id].wins)
     for (const y of [y1, (y1 + y2) / 2, y2]) line("GLASS", ox + x * M, y * M, ox + (x + w) * M, y * M);
@@ -113,6 +119,10 @@ FLOORS.forEach((floor, i) => {
 // ── Tổng mặt bằng lô 5 × 30 m ─────────────────────────────────────────────
 {
   const ox = 30 * M, Y = (m) => m * M;
+  solid(91, ox, 0, W, Y(HOUSE.yardFront)); // sân trước
+  solid(254, ox, Y(HOUSE.yardFront), W, D); // khối nhà
+  solid(91, ox, Y(HOUSE.yardFront) + D, W, Y(HOUSE.yardRear)); // sân sau
+  solid(9, ox + 400, Y(0.5), 1800, 4700); // chỗ đỗ xe
   rect("SITE", ox, 0, HOUSE.lotW * M, HOUSE.lotD * M);
   rect("WALL", ox, Y(HOUSE.yardFront), W, D);
   rect("FURN", ox + 400, Y(0.5), 1800, 4700); // chỗ đỗ sedan 0.50–5.50 m
@@ -133,21 +143,23 @@ FLOORS.forEach((floor, i) => {
   const z = Object.fromEntries(LEVELS.map((l) => [l.key, l.z * M]));
   const voidA = h0 + 9.9 * M, voidB = h0 + 12.8 * M;
   const tumA = h0 + 4.5 * M, tumB = h0 + 13.2 * M;
+  solid(33, ox - 500, -300, HOUSE.lotD * M + 1000, 300); // đất
   line("SITE", ox - 500, 0, ox + HOUSE.lotD * M + 500, 0);
-  rect("WALL", ox + h0, 0, D, z.t1); // nền + bệ
+  cutBox(ox + h0, 0, D, z.t1); // nền + bệ
   for (const lv of [z.t2, z.tum]) {
-    rect("WALL", ox + h0, lv - slab, voidA - h0, slab);
-    rect("WALL", ox + voidB, lv - slab, h1 - voidB, slab);
+    cutBox(ox + h0, lv - slab, voidA - h0, slab);
+    cutBox(ox + voidB, lv - slab, h1 - voidB, slab);
   }
-  rect("WALL", ox + h0, z.t1, t, z.tum - z.t1);
-  rect("WALL", ox + h1 - t, z.t1, t, z.tum - z.t1);
-  rect("WALL", ox + tumA, z.tum, t, z.mai - z.tum);
-  rect("WALL", ox + tumB - t, z.tum, t, z.mai - z.tum);
-  rect("WALL", ox + tumA, z.mai - slab, voidA - tumA, slab);
-  rect("WALL", ox + voidB, z.mai - slab, tumB - voidB, slab);
+  cutBox(ox + h0, z.t1, t, z.tum - z.t1);
+  cutBox(ox + h1 - t, z.t1, t, z.tum - z.t1);
+  cutBox(ox + tumA, z.tum, t, z.mai - z.tum);
+  cutBox(ox + tumB - t, z.tum, t, z.mai - z.tum);
+  cutBox(ox + tumA, z.mai - slab, voidA - tumA, slab);
+  cutBox(ox + voidB, z.mai - slab, tumB - voidB, slab);
   line("GLASS", ox + voidA, z.mai + 150, ox + voidB, z.mai + 150); // mái kính giếng trời
   rect("GLASS", ox + h0, z.tum, 50, 1100); // lan can sân thượng
-  rect("WALL", ox + tumA, z.mai, tumB - tumA, z.dinh - z.mai); // lan can mái
+  cutBox(ox + tumA, z.mai, 100, z.dinh - z.mai); // lan can mái
+  cutBox(ox + tumB - 100, z.mai, 100, z.dinh - z.mai);
   for (let k = 0; k < 11; k++) line("FURN", ox + h0 + 9.6 * M + k * 260, z.t1 + k * 164, ox + h0 + 9.6 * M + (k + 1) * 260, z.t1 + k * 164);
   for (const l of LEVELS) {
     line("AXIS", ox - 1500, l.z * M, ox, l.z * M);
@@ -162,26 +174,27 @@ FLOORS.forEach((floor, i) => {
   text("TEXT", ox + HOUSE.lotD * M / 2, -2300, 350, "MẶT CẮT A–A · TL 1:150");
 }
 
-// ── Mặt đứng mặt tiền 5.00 × 11.20 m ─────────────────────────────────────
+// ── Mặt đứng mặt tiền 5.00 × 11.20 m (tô màu vật liệu) ───────────────────
 {
   const ox = 75 * M, z = Object.fromEntries(LEVELS.map((l) => [l.key, l.z * M]));
+  const face = (color, layer, x, y, w, h) => (solid(color, x, y, w, h), rect(layer, x, y, w, h));
+  solid(33, ox - 1000, -300, W + 2000, 300); // đất
   line("SITE", ox - 1000, 0, ox + W + 1000, 0);
-  rect("WALL", ox, 0, W, z.t1); // bệ granite
-  rect("WALL", ox, z.t1, W, z.tum - z.t1);
-  rect("GLASS", ox + 400, z.t1, 4200, 2700); // kính khách 4.20 × 2.70
+  face(8, "WALL", ox, 0, W, z.t1); // bệ granite
+  face(254, "WALL", ox, z.t1, W, z.tum - z.t1); // vôi bả T1–T2
+  face(151, "GLASS", ox + 400, z.t1, 4200, 2700); // kính khách 4.20 × 2.70
+  for (const x of [1450, 2500, 3550]) line("GLASS", ox + x, z.t1, ox + x, z.t1 + 2700); // khung trượt
+  face(151, "GLASS", ox + t, z.t2, W - 2 * t, z.tum - 300 - z.t2); // kính master sau lam
+  for (let k = 0; k < 41; k++) solid(32, ox + t + k * ((W - 2 * t - 40) / 40), z.t2, 40, z.tum - 300 - z.t2); // lam teak
   rect("GLASS", ox + t, z.t2 + 300, W - 2 * t, 1100); // lan can loggia
-  for (let k = 0; k < 41; k++) {
-    const x = ox + t + 60 + k * ((W - 2 * t - 120) / 40);
-    line("FURN", x, z.t2, x, z.tum - 300);
-  }
-  rect("GLASS", ox, z.tum, W, 1100); // lan can sân thượng
-  rect("WALL", ox, z.tum, W, z.dinh - z.tum);
+  face(254, "WALL", ox, z.tum, W, z.dinh - z.tum); // khối tum
+  face(151, "GLASS", ox + 500, z.tum, 4000, z.mai - 500 - z.tum); // kính phòng thờ (lùi 4.5 m)
+  rect("GLASS", ox, z.tum, W, 1100); // lan can kính sân thượng
   for (const l of LEVELS) text("TEXT", ox + W + 1500, l.z * M, 180, `${l.z >= 0 ? "+" : ""}${l.z.toFixed(2)}`);
   dim(ox, 0, ox + W, 0, 900);
   dim(ox, 0, ox, z.dinh, 900);
   text("TEXT", ox + W / 2, -2300, 350, "MẶT ĐỨNG MẶT TIỀN · TL 1:100");
 }
-
 
 // ── Chi tiết CT-03 … CT-05 (hàng dưới, đơn vị mm thật) ────────────────────
 const BASE = -17000;

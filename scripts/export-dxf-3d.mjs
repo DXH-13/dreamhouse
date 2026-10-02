@@ -2,13 +2,16 @@
 // Chạy: node scripts/export-dxf-3d.mjs  →  cad/dreamhouse-3d.dxf
 // Trục: X ngang lô (0–5 000), Y sâu từ vỉa hè (0) vào trong, Z cao độ (±0.00 = vỉa hè).
 import { mkdirSync, writeFileSync } from "node:fs";
-import { HOUSE, LEVELS } from "../src/lib/house-data.ts";
+import { FLOORS, HOUSE, LEVELS } from "../src/lib/house-data.ts";
+import { FURN, pieces, ROOM_FILL, WALLS } from "./cad-walls.mjs";
 
 const M = 1000;
-const LAYERS = { SITE: 30, SLAB: 8, WALL: 7, GLASS: 5, TEAK: 32, STAIR: 42, GATE: 250 };
+const LAYERS = { SITE: 92, STONE: 8, SLAB: 252, WALL: 7, GLASS: 151, TEAK: 32, STAIR: 42, GATE: 250, FLOOR: 9, FURN: 42, DOOR: 34, FRAME: 250 };
 const out = [];
+let tint = 0; // màu ACI riêng cho mặt kế tiếp (0 = theo layer)
+const tinted = (color, draw) => ((tint = color), draw(), (tint = 0));
 const face = (layer, ...p) =>
-  out.push(["0", "3DFACE", "8", layer, ...p.flatMap(([x, y, z], i) => [10 + i, x, 20 + i, y, 30 + i, z])].join("\n"));
+  out.push(["0", "3DFACE", "8", layer, ...(tint ? ["62", tint] : []), ...p.flatMap(([x, y, z], i) => [10 + i, x, 20 + i, y, 30 + i, z])].join("\n"));
 // hộp chữ nhật [x0,x1] × [y0,y1] × [z0,z1]
 function box(layer, x0, x1, y0, y1, z0, z1) {
   const P = (x, y, z) => [x, y, z];
@@ -42,7 +45,7 @@ box("GATE", 340, 400, 200, 260, 0, 1800);
 box("GATE", 4000, 4060, 200, 260, 0, 1800);
 
 // ── Khối nhà T1–T2 ───────────────────────────────────────────────────────
-box("SLAB", 0, W, front, rear, 0, z.t1); // nền + bệ granite
+box("STONE", 0, W, front, rear, 0, z.t1); // nền + bệ granite
 slabWithVoid(front, rear, z.t2);
 slabWithVoid(front, rear, z.tum);
 box("WALL", 0, t, front, rear, z.t1, z.tum - S); // tường biên trái
@@ -98,56 +101,27 @@ box("WALL", 0, W, rear - 200, rear, z.tum, z.tum + 1100);
 box("WALL", 0, t, tumY[1], rear, z.tum, z.tum + 1100);
 box("WALL", W - t, W, tumY[1], rear, z.tum, z.tum + 1100);
 
-// ── Tường ngăn phòng ─────────────────────────────────────────────────────
-// [trục, toạ độ tim (m), từ, đến (m), lỗ [[từ, đến, "door"|"glass"]], dày mm]
-// "h" = tường chạy theo X tại Y = c; "v" = tường chạy theo Y tại X = c. Cửa đi cao 2 200.
-function partition(axis, c, a0, a1, z0, z1, gaps = [], th = 100) {
+// ── Tường ngăn phòng (số liệu chung với bản vẽ 2D) · cửa đi cao 2 200 ─────
+function partition(spec, z0, z1) {
+  const [axis, c, , , , th = 100] = spec;
   const piece = (layer, a, b, za, zb) =>
     axis === "h"
       ? box(layer, a * M, b * M, Y(c) - th / 2, Y(c) + th / 2, za, zb)
       : box(layer, c * M - th / 2, c * M + th / 2, Y(a), Y(b), za, zb);
-  let at = a0;
-  for (const [s, e, kind] of [...gaps].sort((p, q) => p[0] - q[0])) {
-    if (s > at) piece("WALL", at, s, z0, z1);
-    if (kind === "door") piece("WALL", s, e, z0 + 2200, z1);
-    else piece("GLASS", s, e, z0, z1);
-    at = e;
-  }
-  if (a1 > at) piece("WALL", at, a1, z0, z1);
+  pieces(spec, (kind, a, b) => {
+    if (kind === "solid") piece("WALL", a, b, z0, z1);
+    else if (kind === "door") piece("WALL", a, b, z0 + 2200, z1);
+    else piece("GLASS", a, b, z0, z1);
+  });
 }
-const IN = [t / M, (W - t) / M]; // mép trong tường biên (m)
-const VX = voidX.map((v) => v / M), VY = [9.9, 12.8];
 // quây giếng trời: T1 kính suốt tầng, T2 + tum lan can kính 1 100
 function voidRing(z0, h) {
-  for (const y of VY) box("GLASS", voidX[0], voidX[1], Y(y) - 10, Y(y) + 10, z0, z0 + h);
+  for (const y of voidY) box("GLASS", voidX[0], voidX[1], y - 10, y + 10, z0, z0 + h);
   for (const x of voidX) box("GLASS", x - 10, x + 10, voidY[0], voidY[1], z0, z0 + h);
 }
-{
-  // Tầng 1: khách + bếp mở thông; WC hai cửa; phòng ngủ 01 cuối nhà
-  const [z0, z1] = [z.t1, z.t2 - S];
-  voidRing(z0, z1 - z0);
-  partition("v", 3.15, 10.3, 12.8, z0, z1, [[10.9, 11.6, "door"]]);
-  partition("h", 10.3, 3.15, IN[1], z0, z1);
-  partition("h", 12.8, 3.15, IN[1], z0, z1, [[4.0, 4.7, "door"]]);
-  partition("h", 13.2, ...IN, z0, z1, [[2.2, 3.0, "door"]]);
-}
-{
-  // Tầng 2: master — PN 03 — lõi (WC rộng) — PN 04
-  const [z0, z1] = [z.t2, z.tum - S];
-  voidRing(z0, 1100);
-  partition("h", 5.4, ...IN, z0, z1, [[3.9, 4.7, "door"]]);
-  partition("h", 9.6, ...IN, z0, z1, [[VX[0], 2.6, "glass"], [3.9, 4.7, "door"]]);
-  partition("v", 2.85, 10.05, 12.9, z0, z1, [[10.9, 11.6, "door"]]);
-  partition("h", 10.05, 2.85, IN[1], z0, z1);
-  partition("h", 12.9, 2.85, IN[1], z0, z1);
-  partition("h", 13.2, ...IN, z0, z1, [[3.9, 4.7, "door"]]);
-}
-{
-  // Tum: phòng thờ — lõi kỹ thuật — tường hậu ra sân phơi
-  const [z0, z1] = [z.tum, z.mai - S];
-  voidRing(z0, 1100);
-  partition("h", 9.2, ...IN, z0, z1, [[3.9, 4.7, "door"]]);
-  partition("h", 13.1, ...IN, z0, z1, [[3.9, 4.8, "door"]], 200);
+for (const [id, z0, z1, ring] of [["t1", z.t1, z.t2 - S, z.t2 - S - z.t1], ["t2", z.t2, z.tum - S, 1100], ["tum", z.tum, z.mai - S, 1100]]) {
+  voidRing(z0, ring);
+  for (const spec of WALLS[id]) partition(spec, z0, z1);
 }
 
 // ── Cầu thang 2 vế mỗi tầng (lõi Y 9.6–13.2, X 0.2–1.2) ───────────────────
@@ -159,6 +133,48 @@ for (const [z0, z1] of [[z.t1, z.t2], [z.t2, z.tum]]) {
   }
   box("STAIR", t, 1200, land, Y(13.2), z0 + n * R - 150, z0 + n * R); // chiếu nghỉ
 }
+
+// ── Sàn hoàn thiện tô màu theo phòng, đồ đạc, cánh cửa ───────────────────
+// trụ 8 cạnh (ghế, bồn cầu, chậu cây, bếp nấu)
+function cyl(layer, cx, cy, r, z0, z1) {
+  const P = (k, zz) => [cx + r * Math.cos((k * Math.PI) / 4), cy + r * Math.sin((k * Math.PI) / 4), zz];
+  for (let k = 0; k < 8; k++) {
+    face(layer, P(k, z0), P(k + 1, z0), P(k + 1, z1), P(k, z1));
+    face(layer, [cx, cy, z1], P(k, z1), P(k + 1, z1), P(k + 1, z1));
+  }
+}
+const FLOOR_Z = { t1: z.t1, t2: z.t2, tum: z.tum };
+for (const floor of FLOORS) {
+  const z0 = FLOOR_Z[floor.id];
+  for (const r of floor.rooms) {
+    if (r.kind === "void" && floor.id !== "t1") continue; // ô thông tầng
+    const [x0, x1, y0, y1] = [r.x * M, (r.x + r.w) * M, Y(r.y), Y(r.y + r.h)];
+    tinted(ROOM_FILL[r.kind], () => face("FLOOR", [x0, y0, z0 + 5], [x1, y0, z0 + 5], [x1, y1, z0 + 5], [x0, y1, z0 + 5]));
+  }
+  const roomAt = (x, y) => floor.rooms.find((r) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h);
+  for (const [kind, x, y, a, b, c] of FURN[floor.id]) {
+    const ht = (kind === "r" ? c : b) * M;
+    // thiết bị WC trắng; tủ / bếp / bàn cao ≥ 0.75 m màu gỗ; còn lại (giường, sofa, ghế) xám nhạt
+    const color = roomAt(x, y)?.kind === "wc" ? 7 : ht >= 750 ? 42 : 9;
+    tinted(color, () =>
+      kind === "r" ? box("FURN", x * M, (x + a) * M, Y(y), Y(y + b), z0, z0 + ht) : cyl("FURN", x * M, Y(y), a * M, z0, z0 + ht),
+    );
+  }
+  for (const spec of WALLS[floor.id]) {
+    const [axis, c] = spec;
+    pieces(spec, (kind, a, b) => {
+      if (kind !== "door") return;
+      const w = (b - a) * M; // cánh mở 90°, giống ký hiệu trên mặt bằng 2D
+      if (axis === "h") box("DOOR", a * M, a * M + 40, Y(c), Y(c) + w, z0, z0 + 2100);
+      else box("DOOR", c * M, c * M + w, Y(a), Y(a) + 40, z0, z0 + 2100);
+    });
+  }
+}
+// khung nhôm cửa kính: kính khách T1 (4 cánh), cửa sổ sau T1/T2, kính phòng thờ (3 cánh)
+for (const x of [400, 1450, 2500, 3550, 4550]) box("FRAME", x, x + 50, g1 - 20, g1 + 40, z.t1, z.t1 + 2700);
+for (const zz of [z.t1, z.t1 + 2650]) box("FRAME", 400, 4600, g1 - 20, g1 + 40, zz, zz + 50);
+for (const [a, b] of win) for (const x of [900, 2475, 4050]) box("FRAME", x, x + 50, rear - 130, rear - 70, a, b);
+for (const x of [t, 1733, 3267, W - t - 50]) box("FRAME", x, x + 50, tumY[0] - 20, tumY[0] + 40, z.tum, z.mai - S - 300);
 
 // ── Ghi file ──────────────────────────────────────────────────────────────
 const layerTable = Object.entries(LAYERS)
