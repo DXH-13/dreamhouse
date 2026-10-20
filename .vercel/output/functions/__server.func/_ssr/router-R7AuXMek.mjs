@@ -1,10 +1,10 @@
 import { i as __toESM, n as __exportAll } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
-import { _ as useRouter, f as createRouter, g as createRootRoute, h as createFileRoute, l as Scripts, m as lazyRouteComponent, p as Outlet, u as HeadContent, v as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
+import { I as require_jsx_runtime, _ as useRouter, f as createRouter, g as createRootRoute, h as createFileRoute, l as Scripts, m as lazyRouteComponent, p as Outlet, u as HeadContent } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-C4X_cXcS.js
-var router_C4X_cXcS_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-R7AuXMek.js
+var router_R7AuXMek_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -298,9 +298,9 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-DL8XMNhc.css";
+var styles_default = "/assets/styles-ZIZIpkk6.css";
 var APP_NAME = "Nhà Phố 5×30";
-var Route$1 = createRootRoute({
+var Route$2 = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -352,13 +352,23 @@ var Route$1 = createRootRoute({
 		})]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-C5xRomtn.mjs");
-var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
-	id: "/",
-	path: "/",
-	getParentRoute: () => Route$1
-}) };
-var routeTree = Route$1._addFileChildren(rootRouteChildren)._addFileTypes();
+var $$splitComponentImporter$1 = () => import("./routes-BVJIgjbV.mjs");
+var Route$1 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
+var $$splitComponentImporter = () => import("./render-DaDW2_XD.mjs");
+var Route = createFileRoute("/render")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+var rootRouteChildren = {
+	IndexRoute: Route$1.update({
+		id: "/",
+		path: "/",
+		getParentRoute: () => Route$2
+	}),
+	RenderRoute: Route.update({
+		id: "/render",
+		path: "/render",
+		getParentRoute: () => Route$2
+	})
+};
+var routeTree = Route$2._addFileChildren(rootRouteChildren)._addFileTypes();
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -366,4 +376,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_C4X_cXcS_exports as t };
+export { getRouter, router_R7AuXMek_exports as t };

@@ -44,19 +44,20 @@ function Concept() {
       <div className="lg:col-span-7">
         <p className="text-[11px] tracking-[0.28em] text-sage uppercase">Ý đồ</p>
         <h2 className="mt-3 font-display text-3xl font-medium sm:text-4xl">
-          Chiều sâu là vấn đề. Cầu thang đặt giữa là câu trả lời.
+          Chiều sâu là vấn đề. Cầu thang kính dưới mái kính là câu trả lời.
         </h2>
         <p className="mt-5 text-sm leading-relaxed text-muted sm:text-base">
           Nhà ống 5 m không chia được hai phòng cạnh nhau. Công năng phải xếp dọc:
-          dương phía phố, âm phía vườn. Lõi thang 1.10 m kẹp giếng 1.50 m cắt nhà
-          tại mét thứ mười — vừa đi, vừa thở, vừa sáng cho phòng ngủ giữa tầng 2.
+          dương phía phố, âm phía vườn. Thang chữ U ba cạnh: 3 bậc ngang từ bục gỗ sau phòng khách, vế dài 1.00 m ép sát tường trái (y 5.00–8.90),
+          3 bậc quay ra lên tầng 2; vế dài và vế lên tum chồng đúng một dải, mái kính trùm ngay trên đầu thang — dải thang là giếng trời: vừa đi, vừa
+          thở, vừa sáng cho khối tủ gầm thang, bếp chữ L + đảo, hành lang tầng 2 và sảnh tum.
         </p>
       </div>
       <ul className="grid gap-4 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-1">
         {[
-          ["04", "Phòng ngủ", "Một dưới đất cho ông bà, ba trên lầu."],
-          ["02", "WC", "Trục ướt thẳng đứng, WC tầng 2 rộng 6 m²."],
-          ["01", "Phòng thờ", "Tum, hướng khoảng thoáng mặt tiền."],
+          ["04", "Phòng ngủ", "Một dưới đất cho ông bà, cuối nhà, yên tĩnh, kín sân sau; ba trên lầu."],
+          ["02", "WC", "WC tầng 1 là dải riêng sát tường trái sân sau, nối liền sau phòng ngủ, mái kính che lối từ cửa sau; WC tầng 2 giữa nhà bên phải, thoát qua hộp gen tường phải."],
+          ["01", "Phòng thờ", "Phía trước tum, ban thờ nhìn ra sân thượng và mặt tiền."],
         ].map(([n, t, d]) => (
           <li key={t} className="border-t border-line pt-4">
             <p className="font-display text-3xl text-oak">{n}</p>

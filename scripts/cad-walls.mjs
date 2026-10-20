@@ -1,31 +1,8 @@
-// Dữ liệu dùng chung cho bản vẽ 2D (export-dxf) và mô hình 3D (export-dxf-3d): tường ngăn, đồ đạc, màu phòng.
+// Tường ngăn + đồ đạc nằm trong src/lib/house-data.ts (dùng chung với web và video). File này chỉ giữ phần riêng của CAD.
+export { FURN, WALLS, RAILS, CORE } from "../src/lib/house-data.ts";
+import { CORE, flightTop, stairSoffit } from "../src/lib/house-data.ts";
 
-// ── Tường ngăn trong nhà
-// [trục, tim (m), từ, đến (m), lỗ [[từ, đến, "door"|"glass"]], dày mm]
-// "h" = tường chạy theo X tại y = tim; "v" = tường chạy theo Y tại x = tim. Toạ độ trong nhà (0 = mặt tiền).
-// ponytail: vị trí cửa suy từ ghi chú công năng; mặt bằng ý tưởng chưa có hành lang thật — chỉnh khi triển khai.
-export const WALLS = {
-  t1: [
-    ["v", 3.15, 10.3, 12.8, [[10.9, 11.6, "door"]]],
-    ["h", 10.3, 3.15, 4.8],
-    ["h", 12.8, 3.15, 4.8, [[4.0, 4.7, "door"]]],
-    ["h", 13.2, 0.2, 4.8, [[2.2, 3.0, "door"]]],
-  ],
-  t2: [
-    ["h", 5.4, 0.2, 4.8, [[3.9, 4.7, "door"]]],
-    ["h", 9.6, 0.2, 4.8, [[1.2, 2.6, "glass"], [3.9, 4.7, "door"]]],
-    ["v", 2.85, 10.05, 12.9, [[10.9, 11.6, "door"]]],
-    ["h", 10.05, 2.85, 4.8],
-    ["h", 12.9, 2.85, 4.8],
-    ["h", 13.2, 0.2, 4.8, [[3.9, 4.7, "door"]]],
-  ],
-  tum: [
-    ["h", 9.2, 0.2, 4.8, [[3.9, 4.7, "door"]]],
-    ["h", 13.1, 0.2, 4.8, [[3.9, 4.8, "door"]], 200],
-  ],
-};
-
-// Tách một tường thành các đoạn: fn(kind, từ, đến) với kind = "solid" | "door" | "glass".
+// Tách một tường thành các đoạn: fn(kind, từ, đến) với kind = "solid" | "door" | "glass" | "block" (vách gạch kính — vẽ như kính).
 export function pieces([, , a0, a1, gaps = []], fn) {
   let at = a0;
   for (const [s, e, kind] of [...gaps].sort((p, q) => p[0] - q[0])) {
@@ -37,34 +14,12 @@ export function pieces([, , a0, a1, gaps = []], fn) {
 }
 
 // ── Màu sàn theo công năng (ACI) ─────────────────────────────────────────
-export const ROOM_FILL = { living: 51, kitchen: 31, bed: 151, wc: 131, stair: 41, void: 141, worship: 21, outdoor: 91, service: 9, parking: 9 };
+export const ROOM_FILL = { living: 51, kitchen: 31, bed: 151, wc: 131, stair: 41, void: 141, worship: 21, outdoor: 91, service: 9, hall: 254, parking: 9 };
 
-// ── Đồ đạc (m): ["r", x, y, rộng, sâu, cao] · ["c", x, y, bán kính, cao] ────────
-// giường + 2 gối + 2 tủ đầu giường, đầu giường quay về phía sau (y lớn)
-const BED = (x, y, w, h) => [
-  ["r", x, y, w, h, 0.5],
-  ["r", x + 0.12, y + h - 0.35, w / 2 - 0.17, 0.25, 0.62],
-  ["r", x + w / 2 + 0.05, y + h - 0.35, w / 2 - 0.17, 0.25, 0.62],
-  ["r", x - 0.5, y + h - 0.45, 0.4, 0.4, 0.5],
-  ["r", x + w + 0.1, y + h - 0.45, 0.4, 0.4, 0.5],
-];
-export const FURN = {
-  t1: [
-    ["r", 0.45, 2.0, 2.5, 0.85, 0.8], ["r", 0.45, 2.85, 0.85, 1.3, 0.8], ["r", 1.0, 3.05, 1.2, 0.55, 0.4], ["r", 4.25, 1.7, 0.35, 1.6, 0.5], // sofa chữ L, bàn trà, kệ tivi
-    ["r", 0.25, 5.65, 0.6, 3.6, 0.9], ["c", 0.45, 6.2, 0.09, 0.92], ["c", 0.65, 6.2, 0.09, 0.92], ["c", 0.45, 6.5, 0.09, 0.92], ["c", 0.65, 6.5, 0.09, 0.92], ["r", 0.33, 7.4, 0.45, 0.6, 0.92], ["r", 0.25, 8.45, 0.65, 0.7, 1.8], // bếp, chậu, tủ lạnh
-    ["r", 2.35, 6.85, 1.7, 0.9, 0.75], ["c", 2.55, 6.7, 0.12, 0.45], ["c", 3.85, 6.7, 0.12, 0.45], ["c", 2.55, 7.95, 0.12, 0.45], ["c", 3.85, 7.95, 0.12, 0.45], ["c", 3.2, 6.7, 0.12, 0.45], ["c", 3.2, 7.95, 0.12, 0.45], // bàn ăn 6 ghế
-    ...BED(1.5, 14.35, 2.0, 2.4), ["r", 4.15, 14.2, 0.6, 2.0, 2.2], // giường 1.60, tủ áo
-    ["r", 4.5, 11.75, 0.25, 0.45, 0.8], ["c", 4.3, 11.97, 0.17, 0.4], ["r", 3.9, 10.38, 0.5, 0.4, 0.85], ["r", 3.25, 11.85, 0.85, 0.85, 0.05], // WC: bồn cầu, lavabo, khay sen
-  ],
-  t2: [
-    ...BED(1.35, 2.0, 2.3, 2.1), ["r", 0.25, 1.9, 0.6, 2.4, 2.2], // master + tủ sliding 2.40
-    ...BED(1.4, 6.35, 2.0, 2.0),
-    ...BED(1.5, 14.35, 2.0, 2.4), ["r", 4.15, 14.2, 0.6, 2.0, 2.2],
-    ["c", 4.35, 11.4, 0.2, 0.4], ["r", 4.55, 11.18, 0.2, 0.45, 0.8], ["r", 3.15, 10.3, 0.65, 0.65, 0.85], ["r", 2.95, 12.3, 0.9, 0.5, 0.85], ["r", 3.9, 11.95, 0.85, 0.9, 0.05], // WC: bồn cầu, máy giặt, lavabo đôi, khay sen
-  ],
-  tum: [
-    ["r", 1.5, 8.55, 2.0, 0.55, 1.1], ["r", 1.7, 7.95, 1.6, 0.35, 0.75], // ban thờ tựa tường hậu
-    ["c", 0.6, 0.6, 0.35, 0.6], ["c", 4.4, 0.6, 0.35, 0.6], ["r", 1.5, 3.6, 2.0, 0.45, 0.4], // chậu cây, ghế thấp
-    ["r", 0.8, 16.5, 3.4, 0.05, 1.6], ["r", 0.8, 16.9, 3.4, 0.05, 1.6], ["r", 0.8, 17.3, 3.4, 0.05, 1.6], ["r", 0.4, 13.5, 1.6, 0.6, 0.8], // giàn phơi, dàn nóng
-  ],
-};
+// ── Tủ gầm thang T1: đỉnh cắt theo mặt dưới bản thang (stairSoffit, m trên nền T1) ─────────
+// underStair(x, w, y) — hộp FURN.t1 nằm trong dải thang; profile(y, d, lo, hi) → [[y, z]] từ y tới y+d, z = clamp(soffit, lo, hi)
+export const underStair = (x, w, y) => x < CORE.x[1] && x + w > CORE.x[0] && y >= CORE.flights.t1.y;
+export const profile = (y, d, lo, hi, n = 12) =>
+  Array.from({ length: n + 1 }, (_, i) => y + (d * i) / n).map((yy) => [yy, Math.max(lo, Math.min(hi, stairSoffit(yy)))]);
+// tủ thấp hơn gầm thang (tủ thấp 0.80) có tủ kính khung đen phía trên tới sát gầm
+export const hasDisplay = (y, d, h) => y + d <= flightTop("t1") && stairSoffit(y + d) > h + 0.05;

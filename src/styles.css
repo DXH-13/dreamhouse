@@ -29,6 +29,7 @@
   --color-plan-outdoor: #c5d4bf;
   --color-plan-service: #ddd6cc;
   --color-plan-parking: #cfcbc3;
+  --color-plan-hall: #ece7dd;
 
   --color-mat-plaster: #f3eee4;
   --color-mat-teak: #8b6f4e;
@@ -36,6 +37,8 @@
   --color-mat-stone: #6e6a64;
   --color-mat-glass: #c5d0d4;
   --color-mat-oak: #d8c3a5;
+  --color-mat-beige: #d6c4a6;
+  --color-mat-marble: #ece8e2;
 
   --aspect-portrait: 3 / 4;
   --aspect-photo: 16 / 9;
@@ -129,6 +132,10 @@
 .plan-service {
   fill: var(--color-plan-service);
   background-color: var(--color-plan-service);
+}
+.plan-hall {
+  fill: var(--color-plan-hall);
+  background-color: var(--color-plan-hall);
 }
 .plan-parking {
   fill: var(--color-plan-parking);

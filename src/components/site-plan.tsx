@@ -1,4 +1,6 @@
-import { HOUSE, SITE_NOTES } from "@/lib/house-data";
+import { CORE, FLOORS, HOUSE, SITE_NOTES } from "@/lib/house-data";
+
+const WC = FLOORS[0].rooms.find((r) => r.id === "t1-wc")!;
 
 const W = HOUSE.lotW;
 const D = HOUSE.lotD;
@@ -18,7 +20,7 @@ export function SitePlan() {
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Chiều sâu 30 m bị cắt thành 8 + 18 + 4. Sân trước giữ xe và cây; khối
             nhà 18 m chứa toàn bộ công năng; sân sau 4 m là giếng trời thứ hai —
-            không xây, không mái.
+            chỉ có dải WC một tầng ép sát tường trái, nối liền sau phòng ngủ, cửa ra vườn dưới mái kính từ cửa sau.
           </p>
           <ol className="mt-8 space-y-5">
             {SITE_NOTES.map((n, i) => (
@@ -70,26 +72,23 @@ export function SitePlan() {
                 <text x="2.5" y={HOUSE.yardFront + 5.15} textAnchor="middle" fontSize="0.28" fill="var(--color-muted)" fontFamily="Outfit, sans-serif">
                   5.00 × 18.00 m · 90 m²/sàn
                 </text>
+                {/* giếng trời = khoảng thang, mái kính ngay trên */}
                 <rect
-                  x="0.2"
-                  y={HOUSE.yardFront + 9.6}
-                  width="1.1"
-                  height="3.6"
-                  className="plan-stair"
-                  stroke="var(--color-ink)"
-                  strokeWidth="0.02"
-                />
-                <rect
-                  x="1.4"
-                  y={HOUSE.yardFront + 9.9}
-                  width="1.5"
-                  height="2.8"
+                  x={CORE.x[0]}
+                  y={HOUSE.yardFront + CORE.holes.tum[0]}
+                  width={CORE.x[1] - CORE.x[0]}
+                  height={CORE.holes.tum[1] - CORE.holes.tum[0]}
                   className="plan-void"
                   stroke="var(--color-ink)"
                   strokeWidth="0.02"
                 />
-                <text x="2.15" y={HOUSE.yardFront + 11.4} textAnchor="middle" fontSize="0.22" fill="var(--color-ink-soft)" fontFamily="Outfit, sans-serif">
-                  GIẾNG
+                <path
+                  d={`M${CORE.x[0]} ${HOUSE.yardFront + CORE.holes.tum[0]} L${CORE.x[1]} ${HOUSE.yardFront + CORE.holes.tum[1]} M${CORE.x[1]} ${HOUSE.yardFront + CORE.holes.tum[0]} L${CORE.x[0]} ${HOUSE.yardFront + CORE.holes.tum[1]}`}
+                  stroke="var(--color-ink-soft)"
+                  strokeWidth="0.015"
+                />
+                <text x={(CORE.x[0] + CORE.x[1]) / 2} y={HOUSE.yardFront + (CORE.holes.tum[0] + CORE.holes.tum[1]) / 2 + 0.08} textAnchor="middle" fontSize="0.15" fill="var(--color-ink-soft)" fontFamily="Outfit, sans-serif" paintOrder="stroke" stroke="var(--color-plan-void)" strokeWidth="0.08">
+                  GIẾNG THANG
                 </text>
 
                 <rect
@@ -100,11 +99,29 @@ export function SitePlan() {
                   stroke="var(--color-ink)"
                   strokeWidth="0.03"
                 />
-                <circle cx="2.5" cy={D - 2} r="0.55" fill="var(--color-sage)" opacity="0.5" />
-                <circle cx="1.3" cy={D - 1.2} r="0.25" fill="var(--color-sage)" opacity="0.35" />
-                <circle cx="3.7" cy={D - 1.3} r="0.28" fill="var(--color-sage)" opacity="0.35" />
-                <text x="2.5" y={D - 0.45} textAnchor="middle" fontSize="0.28" fill="var(--color-ink-soft)" fontFamily="Outfit, sans-serif">
-                  SÂN SAU 4.00 m
+                {/* dải WC T1 sát tường trái + mái kính x 1.6–4.8, y 18–19.4 che lối từ cửa sau hành lang tới cửa WC (khớp house-scene) */}
+                <rect
+                  x={WC.x + WC.w}
+                  y={HOUSE.yardFront + HOUSE.houseD}
+                  width={4.8 - (WC.x + WC.w)}
+                  height="1.4"
+                  fill="var(--color-mat-glass)"
+                  opacity="0.45"
+                  stroke="var(--color-ink-soft)"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.1 0.07"
+                />
+                <rect x={WC.x} y={HOUSE.yardFront + WC.y} width={WC.w} height={WC.h} className="plan-wc" stroke="var(--color-ink)" strokeWidth="0.05" />
+                <text x={WC.x + WC.w / 2} y={HOUSE.yardFront + WC.y + WC.h / 2 + 0.1} textAnchor="middle" fontSize="0.28" fill="var(--color-ink)" fontFamily="Outfit, sans-serif">
+                  WC
+                </text>
+                <circle cx="3.2" cy={HOUSE.yardFront + 20.6} r="0.6" fill="var(--color-sage)" opacity="0.5" />
+                <circle cx="4.3" cy={HOUSE.yardFront + 21.2} r="0.35" fill="var(--color-sage)" opacity="0.5" />
+                <text x="4.3" y={HOUSE.yardFront + HOUSE.houseD + 1.95} textAnchor="middle" fontSize="0.2" fill="var(--color-ink-soft)" fontFamily="Outfit, sans-serif">
+                  SÂN SAU
+                </text>
+                <text x="4.3" y={HOUSE.yardFront + HOUSE.houseD + 2.25} textAnchor="middle" fontSize="0.2" fill="var(--color-ink-soft)" fontFamily="Outfit, sans-serif">
+                  4.00 m
                 </text>
 
                 <Dim v x={-0.35} y1={0} y2={HOUSE.yardFront} label="8.00" />

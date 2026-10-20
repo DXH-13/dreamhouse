@@ -9,8 +9,8 @@ export function Materials() {
           Ba vật liệu, một nhịp đứng
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-          Mặt 5 m không chịu được trang trí. Khối vuông, vôi ấm, lam teak, khung
-          than chì. Loggia tầng 2 tạo bóng; tum lùi 4.5 m để khối nhà đọc được hai
+          Mặt 5 m không chịu được trang trí. Khung trắng bo cong, nan sắt đen,
+          đá be, gỗ ấm. Loggia tầng 2 tạo bóng; tum lùi 4.5 m để khối nhà đọc được hai
           tầng rưỡi, không bị ‘hộp’.
         </p>
 

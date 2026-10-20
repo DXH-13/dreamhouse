@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { FLOORS, type FloorId, type Room, type RoomKind } from "@/lib/house-data";
+import { useMemo, useState, type ReactNode } from "react";
+import { CORE, FLOORS, FURN, RAILS, WALLS, type FloorId, type Room, type RoomKind } from "@/lib/house-data";
 import { cn } from "@/lib/utils";
 
 const KIND_CLASS: Record<RoomKind, string> = {
@@ -12,6 +12,7 @@ const KIND_CLASS: Record<RoomKind, string> = {
   worship: "plan-worship",
   outdoor: "plan-outdoor",
   service: "plan-service",
+  hall: "plan-hall",
   parking: "plan-parking",
 };
 
@@ -39,8 +40,8 @@ export function FloorPlans() {
           Trước mở, giữa thở, sau yên
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-          Bấm từng phòng để xem kích thước thông thủy. Lõi thang + giếng trời cố định
-          tại tim 9.60–13.20 m trên cả ba tầng.
+          Bấm từng phòng để xem kích thước thông thủy. Lõi thang kính + giếng trời cố định
+          là thang chữ U ba cạnh — vế dài ép sát tường trái, hai chiếu nghỉ ở hai góc — ngay sau phòng khách; mái kính trên dải thang. Mọi phòng có lối riêng ra hành lang.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-2">
@@ -150,12 +151,12 @@ function FloorSvg({
   onSelect: (id: string) => void;
   floorId: FloorId;
 }) {
-  const vb = "-1.7 -1.4 8.5 21.4";
+  const vb = "-1.7 -1.4 8.5 24";
   return (
     <svg viewBox={vb} className="w-full" role="img" aria-label={`Mặt bằng ${floorId}`}>
-      <rect x="-1.7" y="-1.4" width="8.5" height="21.4" fill="var(--color-paper)" />
+      <rect x="-1.7" y="-1.4" width="8.5" height="24" fill="var(--color-paper)" />
+      {floorId === "t1" ? <rect x="0" y="18" width="5" height="4" fill="none" stroke="var(--color-ink)" strokeWidth="0.04" strokeDasharray="0.15 0.1" /> : null}
       <rect x="0" y="0" width="5" height="18" fill="none" stroke="var(--color-ink)" strokeWidth="0.08" />
-      <rect x="0.04" y="9.64" width="4.92" height="3.52" className="plan-service" />
       {rooms.map((r) => (
         <g key={r.id}>
           <rect
@@ -177,7 +178,7 @@ function FloorSvg({
               }
             }}
           />
-          {r.h >= 1.6 && r.w >= 1.2 ? (
+          {r.h >= 1.4 && r.w >= 1.2 && shortLabel(r.name).length * 0.16 < r.w ? (
             <text
               x={r.x + r.w / 2}
               y={r.y + r.h / 2 - (r.h >= 3 ? 0.15 : 0)}
@@ -190,7 +191,7 @@ function FloorSvg({
               {shortLabel(r.name)}
             </text>
           ) : null}
-          {r.h >= 3 ? (
+          {r.h >= 3 && r.w >= 1.5 ? (
             <text
               x={r.x + r.w / 2}
               y={r.y + r.h / 2 + 0.32}
@@ -206,10 +207,13 @@ function FloorSvg({
         </g>
       ))}
       <Furniture floorId={floorId} />
+      {floorId === "t1" ? (
+        <line x1="3.85" y1="18" x2="4.75" y2="18" stroke="var(--color-paper)" strokeWidth="0.12" />
+      ) : null}
       <text x="2.5" y="-0.7" textAnchor="middle" fontSize="0.32" fill="var(--color-sage)" fontFamily="Outfit, sans-serif" letterSpacing="0.14">
         MẶT TIỀN
       </text>
-      <text x="2.5" y="18.85" textAnchor="middle" fontSize="0.32" fill="var(--color-sage)" fontFamily="Outfit, sans-serif" letterSpacing="0.14">
+      <text x={floorId === "t1" ? 3.5 : 2.5} y="19.05" textAnchor="middle" fontSize="0.32" fill="var(--color-sage)" fontFamily="Outfit, sans-serif" letterSpacing="0.14">
         SÂN SAU
       </text>
       <line x1="0" y1="-0.35" x2="5" y2="-0.35" stroke="var(--color-oak)" strokeWidth="0.025" />
@@ -238,6 +242,9 @@ function shortLabel(name: string) {
     .replace("Phòng khách", "Khách")
     .replace("Phòng thờ", "Thờ")
     .replace("Giếng trời giữa", "Giếng")
+    .replace("Cầu thang kính + giếng trời", "Thang")
+    .replace("Sảnh sinh hoạt", "Sinh hoạt")
+    .replace("Kho gầm thang", "Kho")
     .replace("Cầu thang", "Thang")
     .replace("WC chung rộng", "WC")
     .replace("WC chung", "WC")
@@ -248,44 +255,84 @@ function shortLabel(name: string) {
     .replace("Bếp + Ăn", "Bếp + Ăn");
 }
 
+// Tường ngăn (đặc / kính), lan can, bậc thang và đồ đạc — vẽ từ house-data, cùng nguồn với 3D và CAD
 function Furniture({ floorId }: { floorId: FloorId }) {
-  if (floorId === "t1") {
-    return (
-      <g fill="none" stroke="var(--color-ink-soft)" strokeWidth="0.035" opacity="0.55" pointerEvents="none">
-        <rect x="0.45" y="2.0" width="2.5" height="0.85" rx="0.08" />
-        <rect x="1.0" y="3.05" width="1.2" height="0.55" rx="0.04" />
-        <rect x="4.25" y="1.7" width="0.35" height="1.6" />
-        <rect x="0.25" y="5.65" width="0.6" height="3.6" />
-        <rect x="2.35" y="6.85" width="1.7" height="0.9" />
-        <circle cx="2.55" cy="6.7" r="0.12" />
-        <circle cx="3.85" cy="6.7" r="0.12" />
-        <circle cx="2.55" cy="7.95" r="0.12" />
-        <circle cx="3.85" cy="7.95" r="0.12" />
-        {Array.from({ length: 10 }).map((_, i) => (
-          <line key={i} x1="0.12" y1={9.75 + i * 0.28} x2="1.12" y2={9.75 + i * 0.28} />
-        ))}
-        <rect x="1.5" y="14.35" width="2.0" height="2.4" rx="0.12" />
-      </g>
-    );
-  }
-  if (floorId === "t2") {
-    return (
-      <g fill="none" stroke="var(--color-ink-soft)" strokeWidth="0.035" opacity="0.55" pointerEvents="none">
-        <rect x="1.35" y="2.0" width="2.3" height="2.1" rx="0.12" />
-        <rect x="1.4" y="6.35" width="2.0" height="2.0" rx="0.12" />
-        {Array.from({ length: 10 }).map((_, i) => (
-          <line key={i} x1="0.12" y1={9.75 + i * 0.28} x2="1.12" y2={9.75 + i * 0.28} />
-        ))}
-        <rect x="1.5" y="14.35" width="2.0" height="2.4" rx="0.12" />
-        <circle cx="4.35" cy="11.4" r="0.22" />
-        <rect x="3.15" y="10.3" width="0.7" height="0.7" />
-      </g>
-    );
-  }
+  const walls: ReactNode[] = [];
+  WALLS[floorId].forEach(([axis, at, a0, a1, gaps = []], i) => {
+    let from = a0;
+    const seg = (a: number, b: number, kind: string) => {
+      const [x1, y1, x2, y2] = axis === "h" ? [a, at, b, at] : [at, a, at, b];
+      walls.push(
+        <line
+          key={`${i}-${a}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke={kind === "glass" ? "#6f9bb0" : "var(--color-ink)"}
+          strokeWidth={kind === "glass" ? 0.05 : 0.1}
+        />,
+      );
+    };
+    for (const [s0, e0, kind] of [...gaps].sort((p, q) => p[0] - q[0])) {
+      if (s0 > from) seg(from, s0, "solid");
+      if (kind !== "door") seg(s0, e0, "glass");
+      from = e0;
+    }
+    if (a1 > from) seg(from, a1, "solid");
+  });
+  // thang: cạnh 1 + chiếu nghỉ trước (T1, chữ U) rồi vế dài sát tường, mũi tên lên về phía sau
+  const fl = floorId === "tum" ? null : CORE.flights[floorId];
+  const steps = fl ? Array.from({ length: fl.risers }, (_, k) => fl.y + k * CORE.tread) : [];
+  const cx = (CORE.x[0] + CORE.x[1]) / 2, top = steps[steps.length - 1] ?? 0;
+  const lead = fl ? Array.from({ length: fl.lead }, (_, k) => CORE.x[1] + k * CORE.tread) : [];
+  const [ly0, ly1] = CORE.landing.y, ym = (ly0 + ly1) / 2, xf = CORE.x[1] + (fl ? fl.lead - 1 : 0) * CORE.tread;
+  // cạnh 3 thang chữ U: bậc ngang sau chiếu nghỉ sau, mép sàn trên tại xe
+  const tail = fl ? Array.from({ length: fl.tail }, (_, k) => CORE.x[1] + k * CORE.tread) : [];
+  const [ty0, ty1] = CORE.landing.top, tm = (ty0 + ty1) / 2, xe = CORE.x[1] + (fl && fl.tail ? fl.tail - 1 : 0) * CORE.tread;
   return (
-    <g fill="none" stroke="var(--color-ink-soft)" strokeWidth="0.035" opacity="0.55" pointerEvents="none">
-      <rect x="1.5" y="6.2" width="2.0" height="0.55" />
-      <rect x="1.7" y="6.85" width="1.6" height="0.35" />
+    <g pointerEvents="none">
+      {walls}
+      {RAILS[floorId].map(([x1, y1, x2, y2]) => (
+        <line key={`r${x1}${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#6f9bb0" strokeWidth="0.04" strokeDasharray="0.12 0.06" />
+      ))}
+      <g stroke="var(--color-ink-soft)" strokeWidth="0.025" opacity="0.7">
+        {steps.map((y) => (
+          <line key={y} x1={CORE.x[0]} y1={y} x2={CORE.x[1]} y2={y} />
+        ))}
+        {lead.map((x) => (
+          <line key={`l${x}`} x1={x} y1={ly0} x2={x} y2={ly1} />
+        ))}
+        {lead.length ? <rect x={CORE.x[0]} y={ly0} width={xf - CORE.x[0]} height={ly1 - ly0} fill="none" /> : null}
+        {tail.map((x) => (
+          <line key={`t${x}`} x1={x} y1={ty0} x2={x} y2={ty1} />
+        ))}
+        {tail.length ? <rect x={CORE.x[0]} y={ty0} width={xe - CORE.x[0]} height={ty1 - ty0} fill="none" /> : null}
+        {fl ? (
+          <>
+            {tail.length ? (
+              <>
+                <path d={`M${xf - 0.1} ${ym} H${cx} V${tm} H${xe - 0.1}`} fill="none" strokeWidth="0.03" />
+                <path d={`M${xe - 0.35} ${tm - 0.15} L${xe - 0.1} ${tm} L${xe - 0.35} ${tm + 0.15}`} fill="none" strokeWidth="0.03" />
+              </>
+            ) : (
+              <>
+                <path d={lead.length ? `M${xf - 0.1} ${ym} H${cx} V${top - 0.15}` : `M${cx} ${fl.y + 0.15} V${top - 0.15}`} fill="none" strokeWidth="0.03" />
+                <path d={`M${cx - 0.15} ${top - 0.4} L${cx} ${top - 0.15} L${cx + 0.15} ${top - 0.4}`} fill="none" strokeWidth="0.03" />
+              </>
+            )}
+          </>
+        ) : null}
+      </g>
+      <g fill="none" stroke="var(--color-ink-soft)" strokeWidth="0.03" opacity="0.6">
+        {FURN[floorId].map((f, i) =>
+          f[0] === "r" ? (
+            <rect key={i} x={f[1]} y={f[2]} width={f[3]} height={f[4]} rx="0.03" />
+          ) : (
+            <circle key={i} cx={f[1]} cy={f[2]} r={f[3]} />
+          ),
+        )}
+      </g>
     </g>
   );
 }
