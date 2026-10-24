@@ -30,7 +30,7 @@ function Home() {
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-10 sm:flex-row sm:items-end sm:justify-between sm:px-6">
           <p className="font-display text-2xl">Nhà phố 5 × 30</p>
           <p className="text-xs tracking-wide text-faint">
-            Phương án A · 2 tầng + tum · 4 PN · 2 WC · 2026
+            Phương án A · 2 tầng + tum · 4 PN · 3 WC · 2026
           </p>
         </div>
       </footer>
@@ -56,7 +56,7 @@ function Concept() {
       <ul className="grid gap-4 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-1">
         {[
           ["04", "Phòng ngủ", "Một dưới đất cho ông bà, cuối nhà, yên tĩnh, kín sân sau; ba trên lầu."],
-          ["02", "WC", "WC tầng 1 là dải riêng sát tường trái sân sau, nối liền sau phòng ngủ, mái kính che lối từ cửa sau; WC tầng 2 giữa nhà bên phải, thoát qua hộp gen tường phải."],
+          ["03", "WC", "WC tầng 1 là dải riêng cuối sân sau; tầng 2 có WC riêng cho Master (sau phòng thay đồ) và WC chung tách bồn cầu / khu sen giữa nhà — hai WC lưng đối lưng chung một hộp gen tường phải, giặt sấy tách hẳn ra khoang riêng ở sảnh sau."],
           ["01", "Phòng thờ", "Phía trước tum, ban thờ nhìn ra sân thượng và mặt tiền."],
         ].map(([n, t, d]) => (
           <li key={t} className="border-t border-line pt-4">

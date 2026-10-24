@@ -99,7 +99,7 @@ export function SitePlan() {
                   stroke="var(--color-ink)"
                   strokeWidth="0.03"
                 />
-                {/* dải WC T1 sát tường trái + mái kính x 1.6–4.8, y 18–19.4 che lối từ cửa sau hành lang tới cửa WC (khớp house-scene) */}
+                {/* dải WC T1 sát tường trái + mái kính x 1.6–4.8, y 18–19.4 che lối từ cửa sau hành lang tới cửa WC (khớp house-data) */}
                 <rect
                   x={WC.x + WC.w}
                   y={HOUSE.yardFront + HOUSE.houseD}

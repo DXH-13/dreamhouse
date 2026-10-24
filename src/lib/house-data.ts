@@ -218,9 +218,9 @@ export const FLOORS: Floor[] = [
   {
     id: "t2",
     label: "Tầng 2",
-    title: "Ba phòng ngủ — hành lang dọc giếng thang",
+    title: "Master khép kín có WC riêng — WC chung tách khô / ướt — giặt sấy riêng — PN03 có cửa sổ thật",
     blurb:
-      "Thang chữ U đổ lên đầu thang phía sau (cạnh 3 lên sàn tại x 1.98, y 8.90–9.90): đi hành lang kính dọc giếng thang về phía trước là Master và sảnh sinh hoạt; phía sau là phòng 03, phòng 04. Vế lên tum nằm chồng đúng trên vế dài tầng 1.",
+      "Phương án cũ bất tiện ở bốn điểm: ba phòng ngủ chung một WC 2.00 × 1.90 m nhồi cả giặt sấy, Master không có WC riêng, sảnh sinh hoạt chiếm phần đất đẹp nhất dưới mái kính mà phòng ngủ lại thiếu, và PN03 không có cửa sổ mở được. Phương án mới: bỏ sảnh sinh hoạt riêng — lấy dải giữa nhà x 2.40–5.00 ngay sau Master làm phòng thay đồ + WC riêng cho Master (hai WC lưng đối lưng, chung một hộp gen); WC chung nới rộng 2.10 → 2.60 m, tách bồn cầu riêng khỏi khu sen; máy giặt ra khoang giặt sấy riêng ở sảnh sau; ghế đọc dời về đầu thang dưới mái kính; PN03 mở cửa sổ thật ra hành lang mở + giếng sáng phụ ở cuối nhà.",
     height: "Cao độ tầng 3.30 m · thông thủy 3.00 m",
     rooms: [
       {
@@ -241,7 +241,7 @@ export const FLOORS: Floor[] = [
       {
         id: "t2-master",
         name: "Phòng ngủ 02",
-        subtitle: "Master — phụ huynh",
+        subtitle: "Master — phụ huynh, suite khép kín",
         x: 0,
         y: 1.1,
         w: 5,
@@ -254,6 +254,7 @@ export const FLOORS: Floor[] = [
         notes: [
           "Cửa vào từ đầu hành lang giếng thang.",
           "Giường 1.80 m đầu bọc nệm, vách sau ốp gỗ hắt LED; tủ sliding 2.40 m tường phải.",
+          "Mới: cửa riêng ở tường sau (y 5.00, x 3.60–4.40) vào phòng thay đồ và WC riêng — ban đêm không phải ra hành lang dùng WC chung như phương án cũ.",
         ],
       },
       {
@@ -287,72 +288,119 @@ export const FLOORS: Floor[] = [
         areaNet: 3.4,
         dims: "1.10 × 3.40 m",
         light: "Sáng mái kính rơi qua lan can kính",
-        notes: ["Một bên là lan can kính nhìn xuống bếp, một bên mở ra sảnh sinh hoạt."],
+        notes: ["Một bên là lan can kính nhìn xuống bếp, một bên là phòng thay đồ của Master (vách đặc, không cửa ra hành lang — giữ riêng tư cho suite)."],
       },
       {
-        id: "t2-lounge",
-        name: "Sảnh sinh hoạt",
-        subtitle: "Ghế ngồi — bàn học — kệ sách",
+        id: "t2-dressing",
+        name: "Phòng thay đồ",
+        subtitle: "Của Master — tủ hai dãy + bàn trang điểm",
         x: 2.4,
         y: CORE.y0,
         w: 2.6,
-        h: 8.4 - CORE.y0,
-        kind: "hall",
-        areaGross: 8.8,
-        areaNet: 7.6,
-        dims: "2.30 × 3.30 m",
-        light: "Sáng mái kính qua hành lang",
-        notes: ["Ghế dài có ngăn kéo, bàn học treo tường, kệ sách ô vuông tường phải — như ảnh mẫu sảnh."],
+        h: 6.9 - CORE.y0,
+        kind: "service",
+        areaGross: 4.9,
+        areaNet: 4.3,
+        dims: "2.60 × 1.90 m",
+        light: "Vay sáng qua cửa Master + LED trong tủ",
+        notes: [
+          "Đất của sảnh sinh hoạt cũ — dời sinh hoạt chung xuống đầu thang và tầng 1, lấy chỗ cho suite Master khép kín.",
+          "Tủ áo hai dãy đối nhau + bàn trang điểm cuối phòng; cửa vào từ Master (tường y 5.00), cửa tiếp vào WC riêng ở tường y 6.90.",
+        ],
+      },
+      {
+        id: "t2-ensuite",
+        name: "WC riêng Master",
+        subtitle: "Lavabo — bồn cầu — sen đứng",
+        x: 2.4,
+        y: 6.9,
+        w: 2.6,
+        h: 8.4 - 6.9,
+        kind: "wc",
+        areaGross: 3.9,
+        areaNet: 3.3,
+        dims: "2.60 × 1.50 m",
+        light: "Quạt hút + ô thoáng nối hộp gen chung",
+        notes: [
+          "Lưng đối lưng với WC chung qua tường y 8.40: hai WC dùng chung một hộp gen ở góc sau phải — đường ống ngắn nhất tầng, không thêm ống đứng mới.",
+          "Chỉ vào từ phòng thay đồ, không mở thẳng từ giường ngủ: mùi và hơi ẩm qua hai lớp cửa.",
+        ],
       },
       {
         id: "t2-wc",
         name: "WC chung",
-        subtitle: "Lavabo — sen — giặt sấy",
-        x: 2.9,
+        subtitle: "Bồn cầu tách riêng — lavabo đôi + sen kính",
+        x: 2.4,
         y: 8.4,
-        w: 2.1,
+        w: 2.6,
         h: 2.0,
         kind: "wc",
-        areaGross: 4.2,
-        areaNet: 3.4,
-        dims: "2.00 × 1.90 m",
+        areaGross: 5.2,
+        areaNet: 4.4,
+        dims: "2.60 × 2.00 m",
         light: "Quạt hút lên mái qua hộp gen tường phải",
-        notes: ["Cửa ra đầu thang (tường x 2.90), phục vụ 3 phòng ngủ.", "Ống thoát xuống hộp gen 300 × 300 sát tường phải."],
+        notes: [
+          "Nới rộng từ 2.10 lên 2.60 m (lấy phần sảnh thừa của phương án cũ): bồn cầu có vách + cửa riêng ở góc phải, lavabo đôi phía cửa, sen kính cuối phòng — buổi sáng hai người dùng cùng lúc không kẹt, khách dùng bồn cầu không phải bước qua khu sen ướt.",
+          "Máy giặt đã ra khỏi WC — xem khoang giặt sấy riêng ở sảnh sau.",
+          "Cửa ra đầu thang (tường x 2.40), phục vụ PN03 và PN04.",
+          "Ống thoát xuống hộp gen 300 × 300 sát tường phải như cũ.",
+        ],
       },
       {
         id: "t2-landing",
         name: "Đầu thang",
-        subtitle: "Cạnh 3 của thang chữ U đổ lên đây",
+        subtitle: "Cạnh 3 đổ lên — ghế đọc dưới mái kính",
         x: 1.2,
         y: 8.4,
-        w: 1.7,
+        w: 1.2,
         h: 2.0,
         kind: "hall",
-        areaGross: 3.4,
-        areaNet: 2.6,
-        dims: "1.70 × 2.00 m",
+        areaGross: 2.4,
+        areaNet: 2.0,
+        dims: "1.20 × 2.00 m",
         light: "Ngay dưới mái kính",
-        notes: ["Bước lên từ cạnh 3 (x 1.98) quay về trước theo hành lang giếng thang, hoặc ra sau tới phòng 03, 04; cửa WC chung ngay bên phải."],
+        notes: [
+          "Bước lên từ cạnh 3 (x 1.98): rẽ trước về Master / lên tum, rẽ sau ra PN03, PN04; cửa WC chung ngay bên phải.",
+          "Ghế dài đọc sách đặt dọc đoạn cuối dưới mái kính — phần 'sảnh sinh hoạt' của phương án cũ thu về đây, không tốn một phòng riêng.",
+        ],
       },
       {
         id: "t2-hall",
-        name: "Sảnh đầu thang",
-        subtitle: "Sau đầu thang — vào lối đi phòng 03, 04",
+        name: "Sảnh tầng sau",
+        subtitle: "Vào PN03, PN04 + khoang giặt sấy",
         x: 1.2,
         y: 10.4,
-        w: 3.8,
+        w: 2.7,
         h: CORE.y1 - 10.4,
         kind: "hall",
-        areaGross: 4.2,
-        areaNet: 3.6,
-        dims: "3.60 × 1.10 m",
+        areaGross: 3.0,
+        areaNet: 2.6,
+        dims: "2.70 × 1.10 m",
         light: "Ngay dưới mái kính",
-        notes: ["Từ đầu thang đi thẳng ra sau vào lối đi phòng 03, 04; ô kính trên cao phòng 03 đón sáng mái kính."],
+        notes: ["Từ đầu thang đi thẳng ra sau: trái vào hành lang mở đi PN03 / PN04, phải là khoang giặt sấy cửa lùa."],
+      },
+      {
+        id: "t2-laundry",
+        name: "Giặt sấy",
+        subtitle: "Khoang riêng cửa lùa — giặt + sấy xếp chồng, chậu giặt",
+        x: 3.9,
+        y: 10.4,
+        w: 1.1,
+        h: CORE.y1 - 10.4,
+        kind: "service",
+        areaGross: 1.2,
+        areaNet: 1.0,
+        dims: "1.10 × 1.10 m (khoang kỹ thuật)",
+        light: "Đèn LED + cửa lùa kính mờ vay sáng sảnh",
+        notes: [
+          "Máy giặt + máy sấy xếp chồng 0.60 × 0.60 m và chậu giặt tay 0.45 m — giặt sấy rời khỏi WC nên WC khô ráo, không còn cảnh phơi đồ trong phòng tắm.",
+          "Cấp / thoát nước nối thẳng tường WC chung phía trước (y 10.40); ống thoát hơi sấy ra hộp gen tường phải.",
+        ],
       },
       {
         id: "t2-mid",
         name: "Phòng ngủ 03",
-        subtitle: "Sau thang — yên tĩnh",
+        subtitle: "Sau thang — có cửa sổ mở ra giếng sáng phụ",
         x: 0,
         y: CORE.y1,
         w: 3.8,
@@ -361,10 +409,30 @@ export const FLOORS: Floor[] = [
         areaGross: 12.9,
         areaNet: 11.7,
         dims: "3.80 × 3.40 m (thông thủy 3.55 × 3.30 m)",
-        light: "Ô kính trên cao ra sảnh đầu thang dưới mái kính",
-        notes: ["Giường 1.60 m tựa tường trái, tủ áo tường sau. Cửa ra lối đi."],
+        light: "Cửa sổ mở được ở tường phải đoạn cuối, ra hành lang mở + giếng sáng phụ + ô kính trên cao ra sảnh đầu thang dưới mái kính",
+        notes: [
+          "Khác phương án cũ (chỉ có ô kính cố định vay sáng): cửa sổ 0.80 m ở tường x 3.80 (đoạn y 13.90–14.70) mở ra giếng sáng phụ — thông gió thật, không còn 'phòng hộp tối'.",
+          "Bàn học đặt ngay dưới cửa sổ mới; giường 1.60 m tựa tường trái, tủ áo tường sau. Cửa ra hành lang mở.",
+        ],
       },
-      spine("t2", CORE.y1, 14.9 - CORE.y1, "Nối sảnh đầu thang với phòng 03, 04"),
+      {
+        id: "t2-open-hall",
+        name: "Hành lang mở",
+        subtitle: "Giếng sáng phụ cuối hành lang — cửa sổ PN03 mở ra đây",
+        x: 3.8,
+        y: CORE.y1,
+        w: 1.2,
+        h: 14.9 - CORE.y1,
+        kind: "void",
+        areaGross: 4.1,
+        areaNet: 3.4,
+        dims: "1.20 × 3.40 m",
+        light: "Đoạn cuối y 13.80–14.90 mở lên sân phơi tum (mái kính + lam thoáng): nắng và gió vào thẳng hành lang",
+        notes: [
+          "Thay lối đi đặc kín của phương án cũ: đoạn cuối là giếng sáng phụ — cùng nguyên tắc mái kính che lối đi ở sân sau tầng 1.",
+          "Cửa PN04 ở cuối hành lang (tường y 14.90); cửa PN03 ở đầu hành lang (tường x 3.80).",
+        ],
+      },
       {
         id: "t2-rear",
         name: "Phòng ngủ 04",
@@ -378,7 +446,7 @@ export const FLOORS: Floor[] = [
         areaNet: 13.3,
         dims: "5.00 × 3.10 m (thông thủy 4.60 × 2.90 m)",
         light: "Cửa sổ lớn ra sân sau",
-        notes: ["Cửa ở cuối lối đi. Giường 1.60 m tựa tường trái, tủ áo tường phải.", "Cửa sổ 3.20 m nhìn sân sau."],
+        notes: ["Cửa ở cuối hành lang mở. Giường 1.60 m tựa tường trái, tủ áo tường phải, bàn học cạnh cửa sổ.", "Cửa sổ 3.20 m nhìn sân sau."],
       },
     ],
   },
@@ -480,7 +548,7 @@ export const SITE_NOTES = [
   },
   {
     title: "Khối nhà 5.00 × 18.00 m",
-    body: "90 m²/sàn. Tường biên 200 mm, thông thủy rộng 4.60 m. Thang chữ U ba cạnh: 3 bậc ngang từ bục gỗ sau sofa, vế dài 1.00 m ép sát tường trái (x 0.20–1.20, y 5.00–8.90) giữa hai chiếu nghỉ, 3 bậc quay ra lên tầng 2; vế dài T1 và vế T2→tum chồng đúng một dải, mái kính trùm đầu thang nên dải thang chính là giếng trời. Phía trước là khách / master / sân thượng; giữa nhà là khối tủ đặc dưới gầm thang + bếp chữ L có đảo + bàn ăn 6 ghế (T1), sảnh sinh hoạt + WC chung (T2), phòng thờ (tum); cuối nhà là phòng ông bà yên tĩnh, kín sân sau (T1), phòng 03, 04 (T2), sân phơi. WC T1 tách thành khối riêng cuối sân sau; WC T2 thoát qua hộp gen tường phải."
+    body: "90 m²/sàn. Tường biên 200 mm, thông thủy rộng 4.60 m. Thang chữ U ba cạnh: 3 bậc ngang từ bục gỗ sau sofa, vế dài 1.00 m ép sát tường trái (x 0.20–1.20, y 5.00–8.90) giữa hai chiếu nghỉ, 3 bậc quay ra lên tầng 2; vế dài T1 và vế T2→tum chồng đúng một dải, mái kính trùm đầu thang nên dải thang chính là giếng trời. Phía trước là khách / master / sân thượng; giữa nhà là khối tủ đặc dưới gầm thang + bếp chữ L có đảo + bàn ăn 6 ghế (T1), phòng thay đồ + WC riêng Master, WC chung tách khô / ướt và khoang giặt sấy riêng (T2), phòng thờ (tum); cuối nhà là phòng ông bà yên tĩnh, kín sân sau (T1), phòng 03, 04 (T2), sân phơi. WC T1 tách thành khối riêng cuối sân sau; WC T2 thoát qua hộp gen tường phải."
   },
   {
     title: "Sân sau 4.00 m",
@@ -495,11 +563,11 @@ export const LIGHT_POINTS = [
   },
   {
     title: "Chia sáng theo chiều sâu 18 m",
-    body: "0–5.0 m: sáng trực tiếp mặt tiền. 5.0–11.5 m: sáng đỉnh từ mái kính trên đầu thang, rơi qua lỗ sàn tum (y 7.10–10.94) và tầng 2 (y 6.00–9.90, thêm ô trên cạnh 3) dọc dải thang 1.00 m xuống khối tủ gầm thang, đảo bếp và bàn ăn tầng 1; tầng 2 có hành lang lan can kính dọc lỗ sàn chia sáng cho sảnh sinh hoạt. 11.5–14.9 m: phòng 03 vay sáng qua ô kính trên cao ra sảnh đầu thang, sảnh tum nằm ngay dưới mái kính. 13.4–18 m tầng 1: hành lang sáng từ cửa sau kính ra sân sau, phòng ông bà vay sáng qua ô kính trên cao ra hành lang; 14.9–18 m tầng 2: sáng sân sau 4 m qua cửa sổ 3.20 m phòng 04."
+    body: "0–5.0 m: sáng trực tiếp mặt tiền. 5.0–11.5 m: sáng đỉnh từ mái kính trên đầu thang, rơi qua lỗ sàn tum (y 7.10–10.94) và tầng 2 (y 6.00–9.90, thêm ô trên cạnh 3) dọc dải thang 1.00 m xuống khối tủ gầm thang, đảo bếp và bàn ăn tầng 1; tầng 2 có hành lang lan can kính dọc lỗ sàn chia sáng cho đầu thang và ghế đọc. 11.5–14.9 m: phòng 03 vay sáng qua ô kính trên cao ra sảnh đầu thang, sảnh tum nằm ngay dưới mái kính. 13.4–18 m tầng 1: hành lang sáng từ cửa sau kính ra sân sau, phòng ông bà vay sáng qua ô kính trên cao ra hành lang; 14.9–18 m tầng 2: sáng sân sau 4 m qua cửa sổ 3.20 m phòng 04."
   },
   {
     title: "Phòng ngủ giữa",
-    body: "Điểm yếu kinh điển nhà ống. Phòng 03 nằm ngay sau sảnh đầu thang: ô kính 2.20 m trên cao tường trước (x 1.40–3.60) đón sáng mái kính, tường trắng, sàn gỗ xương cá sáng màu — không để phòng này thành ‘hộp tối’. Phòng ông bà tầng 1 nằm cuối nhà (y 13.40–18.00), tường hậu kín — yên tĩnh, kín sân sau như một phòng nghỉ: lấy sáng và gió qua ô kính trên cao ra hành lang (sáng từ cửa sau), điều hòa."
+    body: "Điểm yếu kinh điển nhà ống. Phòng 03 nằm ngay sau sảnh đầu thang: ô kính 2.20 m trên cao tường trước (x 1.40–3.60) đón sáng mái kính — và ở phương án mới, thêm cửa sổ mở được 0.80 m ở tường phải (y 13.90–14.70) ra giếng sáng phụ ở đoạn cuối hành lang mở, để phòng có gió thật chứ không chỉ vay sáng. Phòng ông bà tầng 1 nằm cuối nhà (y 13.40–18.00), tường hậu kín — yên tĩnh, kín sân sau như một phòng nghỉ: lấy sáng và gió qua ô kính trên cao ra hành lang (sáng từ cửa sau), điều hòa."
   },
   {
     title: "Vật liệu dẫn sáng",
@@ -762,11 +830,11 @@ export const DETAILS: Detail[] = [
     label: "Trục ướt",
     title: "WC tầng 2 trong nhà, WC tầng 1 khối riêng cuối sân — hộp gen và đường ống",
     scale: "Tỷ lệ 1:50 · đơn vị milimét",
-    blurb: "Hai WC không chồng nhau: WC T1 là dải một tầng riêng ép sát tường trái, nối liền sau tường hậu phòng ngủ 01 (x 0.00–1.60, y 18.00–21.80, nền +0.45 trên bệ, mái bằng +3.23, cửa ở tường phải sát đầu nhà quay ra vườn, mái kính x 1.60–4.80 · y 18.00–19.40 che lối từ cửa sau hành lang), WC chung T2 ở giữa nhà bên phải (x 2.90–5.00, y 8.40–10.40, cửa ra đầu thang). WC T2 xả vào ống đứng trong hộp gen 300 × 300 ở góc sau phải sát tường phải (y 10.10–10.40), đi thẳng xuống, chạy ngang dưới nền tầng 1 dọc hành lang ra hố ga sân sau; WC T1 xả thẳng vào hố ga / bể tự hoại ngay cạnh dải WC. Không ống nào treo dưới trần bếp hay trần phòng ngủ; thông hơi đi âm tường phải sảnh tum, không qua phòng thờ.",
+    blurb: "Hai WC không chồng nhau: WC T1 là dải một tầng riêng ép sát tường trái, nối liền sau tường hậu phòng ngủ 01 (x 0.00–1.60, y 18.00–21.80, nền +0.45 trên bệ, mái bằng +3.23, cửa ở tường phải sát đầu nhà quay ra vườn, mái kính x 1.60–4.80 · y 18.00–19.40 che lối từ cửa sau hành lang), WC chung T2 ở giữa nhà bên phải (x 2.40–5.00, y 8.40–10.40, cửa ra đầu thang) và WC riêng Master ngay phía trước nó (x 2.40–5.00, y 6.90–8.40, vào từ phòng thay đồ) — hai WC lưng đối lưng dùng chung hộp gen. WC T2 xả vào ống đứng trong hộp gen 300 × 300 ở góc sau phải sát tường phải (y 10.10–10.40), đi thẳng xuống, chạy ngang dưới nền tầng 1 dọc hành lang ra hố ga sân sau; WC T1 xả thẳng vào hố ga / bể tự hoại ngay cạnh dải WC. Không ống nào treo dưới trần bếp hay trần phòng ngủ; thông hơi đi âm tường phải sảnh tum, không qua phòng thờ.",
     specs: [
       {
         k: "Vị trí",
-        v: "WC T1: dải riêng sát tường trái x 0.00–1.60 · y 18.00–21.80 (thông thủy 1.30 × 3.60 m) · WC T2: x 2.90–5.00 · y 8.40–10.40 (2.00 × 1.90 m)"
+        v: "WC T1: dải riêng sát tường trái x 0.00–1.60 · y 18.00–21.80 (thông thủy 1.30 × 3.60 m) · WC chung T2: x 2.40–5.00 · y 8.40–10.40 (2.60 × 2.00 m) · WC riêng Master: x 2.40–5.00 · y 6.90–8.40 (2.60 × 1.50 m)"
       },
       {
         k: "Hộp gen",
@@ -794,7 +862,7 @@ export const DETAILS: Detail[] = [
       }
     ],
     notes: [
-      "WC chung tầng 2 (lavabo, sen, máy giặt-sấy) không nằm trên WC tầng 1: nhánh ngang nằm trong lớp hạ cốt sàn, ống đứng xuống hộp gen ốp góc tường phải bếp tầng 1, có cửa thăm.",
+      "WC chung tầng 2 (bồn cầu tách riêng, lavabo đôi, sen — giặt sấy đã tách ra khoang riêng ở sảnh sau, nối tường WC) và WC riêng Master (lavabo, bồn cầu, sen) không nằm trên WC tầng 1: nhánh ngang nằm trong lớp hạ cốt sàn, ống đứng xuống hộp gen ốp góc tường phải bếp tầng 1, có cửa thăm.",
       "WC T1 là dải riêng sát tường trái sân sau, cửa quay ra vườn dưới mái kính lối đi: xả thẳng vào hố ga / bể tự hoại sân sau — đường ống ngắn nhất, không ống nào chạy dưới phòng ngủ, mùi và ẩm ở ngoài khối nhà.",
       "Ống thông hơi bắt buộc — thiếu nó thì xả nước tầng 2 sẽ hút cạn bẫy nước tầng 1 và bốc mùi.",
       "Hộp gen bọc bông thủy tinh 25 mm chống ồn nước chảy, có cửa thăm 300 × 400 tại mỗi tầng."
@@ -818,13 +886,16 @@ export const WALLS: Record<FloorId, WallSpec[]> = {
     ["h", 21.7, 0.0, 1.6, [], 200, 2.6],
   ],
   t2: [
-    ["h", CORE.y0, 0.2, 4.8, [[1.35, 2.15, "door"]]], // cửa Master từ đầu hành lang
-    ["h", 8.4, 2.4, 4.8],
-    ["v", 2.9, 8.4, 10.4, [[8.6, 9.3, "door"]]], // cửa WC ra đầu thang
-    ["h", 10.4, 2.9, 4.8],
+    ["h", CORE.y0, 0.2, 4.8, [[1.35, 2.15, "door"], [3.6, 4.4, "door"]]], // cửa Master từ hành lang + cửa vào phòng thay đồ
+    ["v", 2.4, CORE.y0, 8.4], // hành lang | thay đồ + WC riêng (vách đặc giữ riêng tư)
+    ["h", 6.9, 2.4, 4.8, [[3.0, 3.8, "door"]]], // thay đồ | WC riêng Master
+    ["h", 8.4, 2.4, 4.8], // WC riêng | WC chung — tường ướt chung, hai WC chung hộp gen
+    ["v", 2.4, 8.4, 10.4, [[8.6, 9.3, "door"]]], // cửa WC chung ra đầu thang
+    ["h", 10.4, 2.4, 4.8], // WC chung | sảnh sau + giặt sấy
+    ["v", 3.9, 10.4, CORE.y1, [[10.55, 11.35, "door"]]], // cửa lùa khoang giặt sấy ra sảnh
     ["h", CORE.y1, 0.2, 3.8, [[1.4, 3.6, "glass"]]], // ô kính PN03 ra sảnh đầu thang
-    ["v", 3.8, CORE.y1, 14.9, [[11.7, 12.5, "door"]]],
-    ["h", 14.9, 0.2, 4.8, [[3.9, 4.7, "door"]]], // cửa PN04 cuối lối đi
+    ["v", 3.8, CORE.y1, 14.9, [[11.7, 12.5, "door"], [13.9, 14.7, "glass"]]], // cửa PN03 + cửa sổ mới ra giếng sáng phụ
+    ["h", 14.9, 0.2, 4.8, [[3.9, 4.7, "door"]]], // cửa PN04 cuối hành lang mở
   ],
   tum: [
     ["h", CORE.holes.tum[0], 0.2, 1.2], // vách phòng thờ | giếng thang
@@ -911,13 +982,17 @@ export const FURN: Record<FloorId, Furn[]> = {
   ],
   t2: [
     ...bed(0.2, 2.2, 1.8, 2.0, "W"), ["r", 4.15, 1.5, 0.6, 2.4, 2.2, "oak"], // master + tủ sliding 2.40
-    // sảnh sinh hoạt: ghế dài, bàn học, kệ sách
-    ["r", 2.55, 5.1, 1.6, 0.45, 0.45, "white"], ["r", 2.6, 7.85, 1.1, 0.5, 0.75, "oak"], ["c", 3.15, 7.5, 0.22, 0.8, "white"],
-    ["r", 4.45, 5.6, 0.35, 1.8, 2.1, "oak"],
-    // WC chung
-    ["r", 4.55, 8.5, 0.2, 0.45, 0.8, "white"], ["c", 4.32, 8.72, 0.18, 0.4, "white"], // bồn cầu
-    ["r", 3.2, 8.45, 0.7, 0.42, 0.85, "white"], ["r", 3.85, 9.45, 0.9, 0.9, 0.05, "stone"], ["r", 3.0, 9.75, 0.6, 0.6, 1.7, "white"], // lavabo, sen, giặt sấy
-    ...bed(0.2, 12.4, 1.6, 2.0, "W"), ["r", 2.4, 14.25, 1.35, 0.6, 2.2, "oak"], // PN03 + tủ áo
+    // phòng thay đồ Master: tủ hai dãy + bàn trang điểm
+    ["r", 2.55, 5.15, 1.85, 0.55, 2.2, "oak"], ["r", 4.4, 5.85, 0.55, 1.0, 2.2, "oak"], ["r", 3.1, 6.35, 0.9, 0.4, 0.75, "oak"],
+    // WC riêng Master: lavabo, bồn cầu, sen đứng cuối phòng
+    ["r", 2.55, 7.05, 0.7, 0.45, 0.85, "white"], ["r", 3.85, 7.0, 0.2, 0.45, 0.8, "white"], ["c", 3.72, 7.22, 0.18, 0.4, "white"], ["r", 4.05, 7.05, 0.8, 1.25, 0.05, "stone"],
+    // WC chung (nới rộng): lavabo đôi, bồn cầu tách riêng góc phải, sen kính
+    ["r", 2.55, 8.55, 1.1, 0.45, 0.85, "white"], ["r", 4.55, 8.5, 0.2, 0.45, 0.8, "white"], ["c", 4.32, 8.72, 0.18, 0.4, "white"], ["r", 3.9, 9.45, 0.95, 0.85, 0.05, "stone"],
+    // ghế đọc ở đầu thang dưới mái kính (thay sảnh sinh hoạt riêng của phương án cũ)
+    ["r", 1.3, 9.9, 1.0, 0.4, 0.45, "white"],
+    // giặt sấy riêng: máy xếp chồng + chậu giặt
+    ["r", 3.98, 10.5, 0.6, 0.6, 1.7, "white"], ["r", 4.62, 10.5, 0.32, 0.6, 0.85, "white"],
+    ...bed(0.2, 12.4, 1.6, 2.0, "W"), ["r", 2.4, 14.25, 1.35, 0.6, 2.2, "oak"], ["r", 3.18, 13.42, 0.55, 0.48, 0.75, "oak"], // PN03 + tủ áo + bàn học dưới cửa sổ mới
     ...bed(0.2, 15.6, 1.6, 2.0, "W"), ["r", 4.15, 15.6, 0.6, 2.0, 2.2, "oak"], // PN04
   ],
   tum: [
